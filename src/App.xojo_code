@@ -37,7 +37,7 @@ Inherits ConsoleApplication
 		  
 		  RunCommand
 		  
-		  Exception e As RuntimeException
+		  Exception e As Strike.Error
 		    PrintError(e.message)
 		    
 		End Function
@@ -92,7 +92,7 @@ Inherits ConsoleApplication
 		  End Select
 		  
 		  // Get the name of the item to create.
-		  Name = options(1).Lowercase
+		  Name = options(1)
 		  
 		  // Handle any flags by parsing what's left after removing the subcommand/section and the name.
 		  options.RemoveAt(0)
@@ -147,11 +147,17 @@ Inherits ConsoleApplication
 		  Using Rainbow
 		  
 		  // Set the site root to the current working directory
-		  Var site As FolderItem = SpecialFolder.CurrentWorkingDirectory
+		  Var siteFolder As FolderItem
+		  #If DebugBuild
+		    siteFolder = SpecialFolder.Desktop.Child("testsite")
+		  #Else
+		    siteFolder = SpecialFolder.CurrentWorkingDirectory
+		  #EndIf
 		  
 		  Try
 		    Var watch As New StopWatch(True)
-		    Strike.Build(site)
+		    Builder = Strike.SiteBuilder.Load(siteFolder)
+		    Builder.Build
 		    watch.Stop
 		    
 		    #If TargetWindows
@@ -164,8 +170,8 @@ Inherits ConsoleApplication
 		    Print("Site built in " + watch.ElapsedMilliseconds.ToString + " ms")
 		    
 		    Quit(0)
-		  Catch e As RuntimeException
-		    Print(Colourise("An error occurred whilst building. " + e.message, Colour.Red))
+		  Catch e As Strike.Error
+		    Print(Colourise("An error occurred whilst building: " + e.message, Colour.Red))
 		    Quit(-1)
 		  End Try
 		  
@@ -197,16 +203,21 @@ Inherits ConsoleApplication
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0, Description = 53657420746865207369746520726F6F7420746F207468652063757272656E7420776F726B696E67206469726563746F72792E
+	#tag Method, Flags = &h0, Description = 437265617465732061206E6577207369746520696E207468652063757272656E7420776F726B696E67206469726563746F72792E
 		Sub RunCreate(siteName as String)
-		  /// Set the site root to the current working directory.
+		  /// Creates a new site in the current working directory.
 		  
 		  Using Rainbow
 		  
-		  Var cwd As FolderItem = SpecialFolder.CurrentWorkingDirectory
+		  Var cwd As FolderItem
+		  #If DebugBuild
+		    cwd = SpecialFolder.Desktop
+		  #Else
+		    cwd = SpecialFolder.CurrentWorkingDirectory
+		  #EndIf
 		  
 		  Try
-		    site = Strike.CreateSite(siteName, cwd, True)
+		    Builder = Strike.SiteBuilder.Create(Name, cwd, True)
 		    
 		    #If TargetWindows
 		      // The tick doesn't display in the Windows Command Prompt...
@@ -216,34 +227,33 @@ Inherits ConsoleApplication
 		      Print(Colourise("Success ✔︎", Colour.Green))
 		    #EndIf
 		    
-		    Print("Your new site was created at " + builder.Root.NativePath)
+		    Print("Your new site was created at " + Builder.Root.NativePath)
 		    
 		    Print("A single post and a simple page have been created in " + Colourise("/content", Colour.Magenta) + _
 		    ". A simple default theme called ")
 		    
-		    Print "'" + builder.DEFAULT_THEME_NAME + "' has been created for you in " + _
-		    Colourise("/themes", Colour.Magenta) + "."
+		    Print("'" + builder.DEFAULT_THEME + "' has been created for you in " + _
+		    Colourise("/themes", Colour.Magenta) + ".")
 		    
 		    Print("Feel free to create your own with " + Colourise("strike create theme [name]", Colour.Magenta) + ".")
 		    Quit(0)
 		    
-		  Catch e As RuntimeException
-		    Print(Colourise("Something went wrong when creating your site. " + e.message + ").", Colour.Red))
+		  Catch e As Strike.Error
+		    Print(Colourise("Something went wrong when creating your site. " + e.message, Colour.Red))
 		    Quit(-1)
 		  End Try
 		  
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, Description = 437265617465732061206E657720736B656C65746F6E207468656D652063616C6C656420607468656D654E616D656020696E207468652063757272656E7420776F726B696E67206469726563746F72792E
 		Sub RunCreateTheme(themeName as String)
+		  /// Creates a new skeleton theme called `themeName` in the current working directory.
+		  
 		  Using Rainbow
 		  
-		  // Set the site root to the current working directory.
-		  Strike.Initialise(SpecialFolder.CurrentWorkingDirectory)
-		  
 		  Try
-		    Strike3.CreateTheme(themeName)
+		    Strike.CreateTheme(themeName, SpecialFolder.CurrentWorkingDirectory)
 		    #If TargetWindows
 		      //  The tick doesn't display in the Windows Command Prompt...
 		      Print(Colourise("Success.︎", Colour.Green))
@@ -252,12 +262,11 @@ Inherits ConsoleApplication
 		    #EndIf
 		    
 		    Print("Your new theme " + Colourise(themeName, Colour.Magenta) + " was created at " + _
-		    Strike.root.Child("themes").NativePath)
+		    SpecialFolder.CurrentWorkingDirectory.Child(themeName).NativePath)
 		    Quit(0)
 		    
-		  Catch e As RuntimeException
-		    Print(Colourise("Something went wrong when creating your new theme. " + e.Message + _
-		    ").", Colour.Red))
+		  Catch e As Strike.Error
+		    Print(Colourise("Something went wrong when creating your new theme. " + e.Message, Colour.Red))
 		    Quit(-1)
 		  End Try
 		End Sub
@@ -310,6 +319,10 @@ Inherits ConsoleApplication
 		End Sub
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h21
+		Private Builder As Strike.SiteBuilder
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		Command As CommandTypes

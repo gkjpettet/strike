@@ -6,6 +6,7 @@ Protected Class Help
 		  
 		  Using Rainbow
 		  
+		  Print("")
 		  Print("Strike3 is a flexible static site generator built with love by Garry Pettet and written in Xojo.")
 		  Print("")
 		  Print("The main command is " + Colourise("strike", Colour.Magenta) + ", used to build your Strike site.")
@@ -22,6 +23,7 @@ Protected Class Help
 		  Print("")
 		  Print("Use " + Colourise("strike help [command]", Colour.Magenta) + _
 		  " for detailed help on a specific command.")
+		  Print("")
 		  
 		  Quit(0)
 		End Sub

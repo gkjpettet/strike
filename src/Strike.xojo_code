@@ -1,5 +1,14 @@
 #tag Module
 Protected Module Strike
+	#tag Method, Flags = &h1, Description = 437265617465732061206E657720736B656C65746F6E207468656D652063616C6C656420606E616D65602061732061206368696C64206F662060656E636C6F73696E67466F6C646572602E
+		Protected Sub CreateTheme(name As String, enclosingFolder As FolderItem)
+		  /// Creates a new skeleton theme called `name` as a child of `enclosingFolder`.
+		  /// May raise an exception.
+		  
+		  #Pragma Warning "TODO"
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1, Description = 476574732074686520737472696E6720636F6E74656E7473206F6620746865207061737365642066696C652E205374616E6461726469736573206C696E6520656E64696E677320746F20554E49582E204D617920726169736520612060537472696B652E4572726F72602E
 		Protected Function FileContents(file As FolderItem) As String
 		  /// Gets the string contents of the passed file.
@@ -282,8 +291,8 @@ Protected Module Strike
 		    Raise New Strike.Error("The configuration file is missing the `theme` key.")
 		  End If
 		  
-		  If Not config.HasKey("title") Then
-		    Raise New Strike.Error("The configuration file is missing the `title` key.")
+		  If Not config.HasKey("siteName") Then
+		    Raise New Strike.Error("The configuration file is missing the `siteName` key.")
 		  End If
 		End Sub
 	#tag EndMethod
@@ -458,7 +467,7 @@ Protected Module Strike
 	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"0", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
 

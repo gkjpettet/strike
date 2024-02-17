@@ -5,6 +5,10 @@ Protected Class SiteBuilder
 		  /// Recursively adds (as NavigationItems) the folders contained within `folder` as children of 
 		  /// the passed `parent` NavigationItem and returns the modified parent.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  For Each f As FolderItem In folder.Children
 		    If f.IsFolder Then
 		      Var ni As New Strike.NavigationItem(f.Name, NavigationPermalink(f), Strike.Slugify(f.Name), parent)
@@ -20,6 +24,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 41646473207468652070617373656420706F737420746F20746865207369746527732064617461626173652E
 		Private Sub AddPostToDatabase(post As Strike.Post)
 		  /// Adds the passed post to the site's database.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var rs As RowSet
 		  Var tagName As String
@@ -93,6 +101,10 @@ Protected Class SiteBuilder
 		Private Sub AddSectionFolder(source As FolderItem, destination As FolderItem)
 		  /// Used to recursively copy the folder structure of `/content` into our public build folder.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var newDestination As FolderItem
 		  
 		  If source.IsFolder Then
@@ -118,6 +130,10 @@ Protected Class SiteBuilder
 		  /// Builds the site. The built site will be placed within `public` in the site's root.
 		  /// Assumes that a site has been correctly loaded prior to calling this method.
 		  /// May raise an exception.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // Ensure we have an empty public folder to build into.
 		  PublicFolder = Root.Child("public")
@@ -183,6 +199,10 @@ Protected Class SiteBuilder
 		  /// baseURL/archive/<year>/<month>/index.html
 		  /// baseURL/archive/<year>/<month>/<day>/index.html
 		  /// baseURL/archive/<year>/page/<pageNumber>/index.html
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Const QUOTE = """"
 		  
@@ -314,6 +334,10 @@ Protected Class SiteBuilder
 		  /// Builds the archive folders and files for this year.
 		  /// We assume that there is at least one post made in this year.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var prevNum, nextNum As Integer
 		  
 		  Var buildDrafts As Boolean = Config.Lookup("buildDrafts", False)
@@ -441,6 +465,10 @@ Protected Class SiteBuilder
 		  /// Builds the list page(s) for all sections in the content folder, placing them
 		  /// into the /public folder.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  If folder.IsFolder Then
 		    If IsSection(folder) Then RenderList(folder)
 		    For Each f As FolderItem In folder.Children
@@ -454,6 +482,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 4372656174657320746865206D61696E2073697465206E617669676174696F6E20747265652E
 		Private Sub BuildNavigation()
 		  /// Creates the main site navigation tree.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // Create the root.
 		  SiteNavTree = New Strike.NavigationItem("root", "baseURL", "")
@@ -477,6 +509,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 4275696C64732074686520525353206665656420616E6420736176657320697420746F20602F7273732E786D6C602E
 		Private Sub BuildRSSFeed()
 		  /// Builds the RSS feed and saves it to `/rss.xml`.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var xml As New XmlDocument
 		  
@@ -517,6 +553,10 @@ Protected Class SiteBuilder
 		Private Sub BuildSiteFolders()
 		  /// Constructs the required folders in the `/public` folder to house the rendered HTML files.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  // User defined content sections.
 		  AddSectionFolder(Root.Child("content"), PublicFolder)
 		  
@@ -533,6 +573,10 @@ Protected Class SiteBuilder
 		  /// E.g:
 		  /// baseURL/tag/<tag-name>/index.html
 		  /// baseURL/tag/<tag-name>/page/2/index.html, etc
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var rs As RowSet
 		  Try
@@ -578,6 +622,10 @@ Protected Class SiteBuilder
 		  ///
 		  /// Thanks to Kem Tekinay: https://forum.xojo.com/t/md5-check-a-file/23390/5?u=garrypettet
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var mdfive As New MD5Digest
 		  
 		  Var bs As BinaryStream = BinaryStream.Open(file)
@@ -596,6 +644,10 @@ Protected Class SiteBuilder
 		Private Sub ConnectToDatabase()
 		  /// Connects to the database file.
 		  /// Assumes `Root` points to a validated site root.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Database = New SQLiteDatabase
 		  DatabaseFile = Root.Child("site.data")
@@ -630,6 +682,10 @@ Protected Class SiteBuilder
 		Private Sub CopyStorage()
 		  /// Copies any files in `Root/storage` to `public/storage`.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var publicStorage As FolderItem = PublicFolder.Child("storage")
 		  
 		  Var storage As FolderItem = Root.Child("storage")
@@ -644,6 +700,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 436F7069657320616E79206173736574732070726F7669646564206279207468652063757272656E74207468656D6520746F20607075626C69632F7468656D652F617373657473602E
 		Private Sub CopyThemeAssets()
 		  /// Copies any assets provided by the current theme to `public/theme/assets`.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var publicAssets As FolderItem = PublicFolder.Child("assets")
 		  Var themeAssets As FolderItem = Theme.Child("assets")
@@ -662,7 +722,7 @@ Protected Class SiteBuilder
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, Description = 437265617465732061206E657720656D7074792073697465206E616D65642060736974654E616D65602077697468696E2061206368696C6420666F6C646572206F662060706172656E74602E2041737369676E7320746869732073697465206275696C64657220746F20746865206E65776C7920636F6E737472756374656420736974652E
-		Shared Function Create(siteName As String, parent As FolderItem) As Strike.SiteBuilder
+		Shared Function Create(siteName As String, parent As FolderItem, sampleContent As Boolean = True) As Strike.SiteBuilder
 		  /// Creates a new empty site named `siteName` within a child folder of `parent`.
 		  /// Assigns this site builder to the newly constructed site.
 		  /// Raises an exception if an issue occurs.
@@ -738,6 +798,10 @@ Protected Class SiteBuilder
 		  // Create the site's database.
 		  builder.CreateDatabase
 		  
+		  If sampleContent Then
+		    CreateSampleContent(builder.Root)
+		  End If
+		  
 		  Return builder
 		  
 		  
@@ -748,6 +812,10 @@ Protected Class SiteBuilder
 		Private Sub CreateDatabase()
 		  /// Creates a new database for the current site.
 		  /// Assumes that `Create()` has just been called.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // Create the actual file on disk that will contain the SQLite database.
 		  DatabaseFile = Root.Child("site.data")
@@ -769,6 +837,45 @@ Protected Class SiteBuilder
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21, Description = 4372656174657320736F6D6520626F696C6572706C6174652F7374617274657220636F6E74656E7420666F722074686520736974652077697468696E20746865207061737365642060736974656020666F6C6465722E
+		Private Shared Sub CreateSampleContent(site As FolderItem)
+		  /// Creates some boilerplate/starter content for the site within the passed `site` folder.
+		  
+		  Const QUOTE = """"
+		  
+		  // Create a 'Hello World' post.
+		  Try
+		    Var f As FolderItem = site.Child("content").Child("Hello World.md")
+		    Var tout As TextOutputStream = TextOutputStream.Create(f)
+		    tout.WriteLine("+++")
+		    tout.WriteLine("title = " + QUOTE + "Hello World!" + QUOTE)
+		    tout.WriteLine("+++")
+		    tout.WriteLine("")
+		    tout.WriteLine("This is your first post. Feel free to edit or delete it.")
+		    tout.Close
+		  Catch
+		    Raise New Strike.Error("Unable to create sample content (`Hello World post`).")
+		  End Try
+		  
+		  // Create an 'about' page.
+		  Try
+		    site.Child("content").Child("about").CreateFolder
+		    Var f As FolderItem = site.Child("content").Child("about").Child("index.md")
+		    Var tout As TextOutputStream = TextOutputStream.Create(f)
+		    tout.WriteLine("+++")
+		    tout.WriteLine("title = " + QUOTE + "About Page" + QUOTE)
+		    tout.WriteLine("+++")
+		    tout.WriteLine("")
+		    tout.Write("This is an example of a page. You can find its content in **/content/about/index.md**. ")
+		    tout.Write("Feel free to edit or delete it.")
+		    tout.Close
+		  Catch
+		    Raise New Strike.Error("Unable to create sample content (`About Page`).")
+		  End Try
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21, Description = 52657475726E732054727565206966207468657265206973206120706F737420696E2074686520646174616261736520776974682061206D61746368696E67206861736820616E642066696C6520706174682E
 		Private Function FileExistsInDatabase(hash As String, filePath As String) As Boolean
 		  /// Returns True if there is a post in the database with a matching hash and file path. 
@@ -777,6 +884,10 @@ Protected Class SiteBuilder
 		  /// to re-render the markdown. 
 		  /// If the hash is not in the database but the file path is then the file has changed but the
 		  /// user kept it in the same location in `/content`. 
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // Is there a post in the database with this hash and file path?
 		  Var sql As String = "SELECT id FROM posts WHERE (hash='" + hash + "') AND (filePath = '" + _
@@ -800,6 +911,10 @@ Protected Class SiteBuilder
 		Private Sub FileToDatabase(file as FolderItem)
 		  /// Takes a file found within `/content` and adds it to the site's database if needed.
 		  /// May raise an exception.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var post As New Strike.Post(file)
 		  
@@ -869,6 +984,10 @@ Protected Class SiteBuilder
 		  ///  www.example.com/blog/personal/    section = blog.personal
 		  ///  www.example.com/about/            section = about
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  If Not folder.IsFolder Then
 		    Raise New Strike.Error("`" + folder.NativePath + "` is not a folder.")
 		  End If
@@ -892,6 +1011,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 52657475726E73207468652074656D706C6174652066696C6520746F2075736520746F2072656E646572207468697320706F73742E
 		Private Function GetTemplateFile(p As Strike.Post, postType As Strike.PostTypes) As FolderItem
 		  /// Returns the template file to use to render this post.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // We default to `theme/page.html` or `theme/post.html` if we can't 
 		  // find `theme/sectionPath/page.html` or `theme/sectionPath/page.html` (depending on `type`)
@@ -927,6 +1050,10 @@ Protected Class SiteBuilder
 		Private Function GetTemplateListFile(section As String) As FolderItem
 		  /// Returns the template file to use to render this section list.
 		  /// `section` is the dot-delimited section path.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  /// Get the template file to use to render this post.
 		  /// We default to `theme/list.html` if we can't find `theme/sectionPath/list.html`.
@@ -968,6 +1095,10 @@ Protected Class SiteBuilder
 		  /// {{helper.month}}      The current month (two digits).
 		  /// {{helper.year}}       The current year (four digits).
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var d As DateTime = DateTime.Now
 		  
 		  Select Case name
@@ -1005,6 +1136,10 @@ Protected Class SiteBuilder
 		  /// Takes a folder within `/content` and returns True if it's a section rather than a page.
 		  /// If a folder in `/content` contains just a single index.md file then it's a page, 
 		  /// otherwise it's a section.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  If Not folder.Child("index.md").Exists Then
 		    // Section. 
@@ -1048,6 +1183,10 @@ Protected Class SiteBuilder
 		  /// Used when generating the main site navigation.
 		  /// We keep error checking light here as it should have been done beforehand.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var f As FolderItem = folder
 		  
 		  Var url As String
@@ -1073,7 +1212,7 @@ Protected Class SiteBuilder
 		  "archives"    : False, _
 		  "baseURL"     : "/", _
 		  "buildDrafts" : False, _
-		  "decription"  : "My awesome site", _
+		  "description"  : "My awesome site", _
 		  "postsPerPage": 10, _
 		  "rss"         : False, _
 		  "siteName"    : "My Site", _
@@ -1088,6 +1227,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 52657475726E732074686520466F6C6465724974656D20666F72207768657265207468697320706F73742073686F756C642062652072656E646572656420746F20696E20746865206F757470757420666F6C6465722E
 		Private Function OutputPathForPost(p As Strike.Post) As FolderItem
 		  /// Returns the FolderItem for where this post should be rendered to in the output folder.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // If there's no section then it's top level.
 		  If p.Section = "" Then
@@ -1114,6 +1257,10 @@ Protected Class SiteBuilder
 		Private Function Permalink(f As FolderItem) As String
 		  /// Returns what will be the public URL of the passed file.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var baseURL As String = Config.Lookup("baseURL", "/")
 		  Return If(baseURL.Right(1) = "/", baseURL.Left(baseURL.Length - 1), baseURL) + _
 		  f.NativePath.Replace(PublicFolder.NativePath, "")
@@ -1125,6 +1272,10 @@ Protected Class SiteBuilder
 		Private Function PostCountForSection(section As String) As Integer
 		  /// Returns the number of posts in the specified section.
 		  /// `section` should be dot-delimited (e.g: "blog.personal" for posts in `content/blog/personal`).
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var rs As RowSet
 		  Try
@@ -1151,6 +1302,10 @@ Protected Class SiteBuilder
 		Private Function PostFromDatabaseRow(row As DatabaseRow) As Strike.Post
 		  /// Instantiates a new post from a row in the site's database (posts table).
 		  /// May raise a `Strike.Error`.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  #Pragma BreakOnExceptions False
 		  
@@ -1217,6 +1372,10 @@ Protected Class SiteBuilder
 		  ///
 		  /// We call it recursively for each folder encountered within `/content`.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  For Each item As FolderItem In folder.Children
 		    If item.IsFolder Then
 		      Process(item)
@@ -1233,6 +1392,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 52656E6465727320746865206261736555524C2F617263686976652F696E6465782E68746D6C20706167652E
 		Private Sub RenderArchivePage()
 		  /// Renders the baseURL/archive/index.html page.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // Get the "archive.html" template file text to use to render this post.
 		  Var templateFile As FolderItem = Theme.Child("layouts").Child("archive.html")
@@ -1279,6 +1442,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 436F6E73747275637473206120686F6D6520706167652074686174206C6973747320616C6C207369746520706F7374732E
 		Private Sub RenderHomePageList()
 		  /// Constructs a home page that lists all site posts.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var buildDrafts As Boolean = Config.Lookup("buildDrafts", False)
 		  
@@ -1371,6 +1538,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 52656E6465727320746865206C697374207061676528732920666F7220746865207370656369666965642073656374696F6E2061732048544D4C20746F20746865202F7075626C696320666F6C6465722E
 		Private Sub RenderList(sectionFolder As FolderItem)
 		  /// Renders the list page(s) for the specified section as HTML to the /public folder.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var buildDrafts As Boolean = Config.Lookup("buildDrafts", False)
 		  
@@ -1494,6 +1665,10 @@ Protected Class SiteBuilder
 		  ///   index.html      <-- page 1 list contents
 		  ///   page/2/index.html
 		  ///   page/3/index.html
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  /// Get a reference to the file on disk where we'll store the finished page.
 		  Var pageFile As FolderItem
@@ -1620,6 +1795,10 @@ Protected Class SiteBuilder
 		Private Sub RenderPost(p As Strike.Post, postType As Strike.PostTypes)
 		  /// Renders an individual post as HTML to the `/public` folder.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  // Get the correct template to use to render this post.
 		  Var templateFile As FolderItem
 		  
@@ -1684,6 +1863,10 @@ Protected Class SiteBuilder
 		Private Sub RenderPosts()
 		  /// Renders the posts in the site's database to HTML using the current theme.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var rs As RowSet
 		  
 		  // Get the posts as a RowSet.
@@ -1724,6 +1907,10 @@ Protected Class SiteBuilder
 		  ///
 		  /// `tagFolder` is the parent folder for this tag
 		  /// E.g: the 'happy' tag parent folder is: `baseURL/tag/happy/`
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // How many posts have this tag?
 		  Var rs As RowSet
@@ -1818,6 +2005,10 @@ Protected Class SiteBuilder
 		  ///
 		  /// If this is a list page then a ListContext will be passed in.
 		  /// A Post instance will be passed in for all posts and pages except the homepage.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  // Remove the starting `{{` and trailing `}}`.
 		  tag = tag.Right(tag.Length - 2)
@@ -1986,6 +2177,10 @@ Protected Class SiteBuilder
 		  ///
 		  /// The passed post **must** already have its URL correctly set.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Var section As String
 		  
 		  // post.URL is in the format: `BaseURL/section1/section[N]/fileName.html`.
@@ -2008,6 +2203,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 52657475726E7320746865206E756D626572206F6620706F73747320696E2074686520736974652E
 		Private Function SitePostCount() As Integer
 		  /// Returns the number of posts in the site.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var rs As RowSet
 		  
@@ -2080,6 +2279,10 @@ Protected Class SiteBuilder
 		  ///
 		  /// {{strike3.version}}: Strike’s version number
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Const QUOTE = """"
 		  
 		  Select Case name
@@ -2102,6 +2305,10 @@ Protected Class SiteBuilder
 		  /// Returns the passed post's tags as an unordered HTML list.
 		  /// If there are no tags then an empty list is returned.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Const QUOTE = """"
 		  
 		  If p.Tags.Count = 0 Then Return ""
@@ -2122,6 +2329,10 @@ Protected Class SiteBuilder
 		  /// Determines the public URL for the passed file.
 		  ///
 		  /// E.g. if the file's path = content/about/index.md then url = baseURL/about/index.html
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  Var content As FolderItem = Root.Child("content")
 		  Var item As FolderItem = file.Parent
@@ -2149,6 +2360,10 @@ Protected Class SiteBuilder
 		  /// Writes the passed string to the specified file.
 		  /// May raise an IOException.
 		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
+		  
 		  Try
 		    Var tout As TextOutputStream = TextOutputStream.Create(file)
 		    tout.Write(contents)
@@ -2163,6 +2378,10 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 436F6E76656E69656E6365206D6574686F6420666F7220616464696E6720612074657874206E6F646520746F207468652073706563696669656420706172656E74206E6F64652E
 		Private Function XmlNodeWithText(ByRef xml As XmlDocument, ByRef parentNode As XmlNode, nodeTitle As String, textToAdd As String) As XmlNode
 		  /// Convenience method for adding a text node to the specified parent node.
+		  
+		  #Pragma DisableBackgroundTasks
+		  #Pragma DisableBoundsChecking
+		  #Pragma StackOverflowChecking False
 		  
 		  If xml = Nil Or parentNode = Nil Then Return Nil
 		  
@@ -2224,8 +2443,8 @@ Protected Class SiteBuilder
 		PublicFolder As FolderItem
 	#tag EndProperty
 
-	#tag Property, Flags = &h21, Description = 5468652073697465277320726F6F7420666F6C6465722E
-		Private Root As FolderItem
+	#tag Property, Flags = &h0, Description = 5468652073697465277320726F6F7420666F6C6465722E
+		Root As FolderItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -2251,7 +2470,7 @@ Protected Class SiteBuilder
 	#tag EndComputedProperty
 
 
-	#tag Constant, Name = DEFAULT_THEME, Type = String, Dynamic = False, Default = \"bee", Scope = Protected
+	#tag Constant, Name = DEFAULT_THEME, Type = String, Dynamic = False, Default = \"bee", Scope = Public
 	#tag EndConstant
 
 	#tag Constant, Name = SCHEMA, Type = String, Dynamic = False, Default = \"\n\nCREATE TABLE \"post_tag\" (\n\"id\" INTEGER UNIQUE PRIMARY KEY\x2C\n\"posts_id\" INTEGER NOT NULL REFERENCES \"posts.id\"(\"\") ON UPDATE CASCADE ON DELETE CASCADE\x2C\n\"tags_id\" INTEGER NOT NULL REFERENCES \"tags.id\"(\"\") ON UPDATE CASCADE ON DELETE CASCADE\n);\n\n\nCREATE TABLE \"posts\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"date\" INTEGER NOT NULL\x2C\n\"dateDay\" INTEGER NOT NULL\x2C\n\"dateMonth\" INTEGER NOT NULL\x2C\n\"dateYear\" INTEGER NOT NULL\x2C\n\"filePath\" TEXT NOT NULL\x2C\n\"hash\" TEXT NOT NULL\x2C\n\"isDraft\" INTEGER NOT NULL DEFAULT 0\x2C\n\"isHomepage\" INTEGER DEFAULT 0 NOT NULL\x2C\n\"isPage\" INTEGER NOT NULL DEFAULT 0\x2C\n\"lastUpdated\" TEXT NOT NULL\x2C\n\"markdown\" TEXT NOT NULL\x2C\n\"renderedMarkdown\" TEXT NOT NULL\x2C\n\"section\" TEXT NOT NULL\x2C\n\"slug\" TEXT NOT NULL\x2C\n\"title\" TEXT NOT NULL\x2C\n\"toml\" TEXT\x2C\n\"url\" TEXT NOT NULL\x2C\n\"verified\" INTEGER DEFAULT 0 NOT NULL\n);\n\n\nCREATE TABLE \"tags\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"name\" TEXT NOT NULL UNIQUE\n);\n", Scope = Private, Description = 5468652053514C20726571756972656420746F2063726561746520746865207369746527732064617461626173652E
