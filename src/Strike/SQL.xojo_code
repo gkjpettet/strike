@@ -5,6 +5,17 @@ Protected Module SQL
 		  /// Returns the SQL statement to select all posts in the site limited to `postsPerPage`
 		  /// with an offset calculated from the passed `currentPage`.
 		  
+		  If postsPerPage = -1 Then
+		    // Return all posts. No pagination.
+		    If buildDrafts Then
+		      Return "SELECT * FROM posts WHERE isPage=0 AND date <= " + _
+		      SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		    Else
+		      Return "SELECT * FROM posts WHERE isPage=0 AND isDraft=0 AND date <= " + _
+		      SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		    End If
+		  End If
+		  
 		  Var offset As Integer = (currentPage * postsPerPage) - postsPerPage
 		  
 		  If buildDrafts Then
@@ -131,6 +142,23 @@ Protected Module SQL
 		  /// to `postsPerPage` with an offset calculated from the passed `currentPage`.
 		  /// Excludes pages.
 		  
+		  If postsPerPage = -1 Then
+		    // All posts for this date - no pagination.
+		    If buildDrafts Then
+		      Return "SELECT * FROM posts WHERE dateYear='" + year.ToString + "' " + _
+		      "AND dateMonth='" + month.ToString + "' " + _
+		      "AND dateDay='" + day.ToString + "' " + _
+		      "AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY date DESC;"
+		    Else
+		      Return "SELECT * FROM posts WHERE dateYear='" + year.ToString + "' " + _
+		      "AND dateMonth='" + month.ToString + "' " + _
+		      "AND dateDay='" + day.ToString + "' " + _
+		      "AND isPage='0' AND isHomepage='0' AND isDraft=0 " + _
+		      "ORDER BY date DESC;"
+		    End If
+		  End If
+		  
 		  Var offset As Integer = (currentPage * postsPerPage) - postsPerPage
 		  
 		  If buildDrafts Then
@@ -157,6 +185,21 @@ Protected Module SQL
 		  /// to `postsPerPage` with an offset calculated from the passed `currentPage`.
 		  /// Excludes pages.
 		  
+		  If postsPerPage = -1 Then
+		    // All posts for this date - no pagination.
+		    If buildDrafts Then
+		      Return "SELECT * FROM posts WHERE dateYear='" + year.ToString + "' " + _
+		      "AND dateMonth='" + month.ToString + "' " + _
+		      "AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY date DESC;"
+		    Else
+		      Return "SELECT * FROM posts WHERE dateYear='" + year.ToString + "' " + _
+		      "AND dateMonth='" + month.ToString + "' " + _
+		      "AND isPage='0' AND isHomepage='0' AND isDraft=0 " + _
+		      "ORDER BY date DESC;"
+		    End If
+		  End If
+		  
 		  Var offset As Integer = (currentPage * postsPerPage) - postsPerPage
 		  
 		  If buildDrafts Then
@@ -181,6 +224,17 @@ Protected Module SQL
 		  /// to `postsPerPage` with an offset calculated from the passed `currentPage`.
 		  /// `section` should be dot-delimited (e.g: "blog.personal" for posts in `content/blog/personal`).
 		  
+		  If postsPerPage = -1 Then
+		    // All posts for this section - no pagination.
+		    If buildDrafts Then
+		      Return "SELECT * FROM posts WHERE section='" + section + "' " + _
+		      "AND date <= " + SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		    Else
+		      Return "SELECT * FROM posts WHERE section='" + section + "' AND isDraft=0 " + _
+		      "AND date <= " + SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		    End If
+		  End If
+		  
 		  Var offset As Integer = (currentPage * postsPerPage) - postsPerPage
 		  
 		  If buildDrafts Then
@@ -201,6 +255,13 @@ Protected Module SQL
 		  /// Returns the SQL statement to select all posts with the specified tag limited to `postsPerPage`
 		  /// with an offset calculated from the passed `currentPage`.
 		  
+		  If postsPerPage = -1 Then
+		    // All posts - no pagination.
+		    Return "SELECT DISTINCT posts.* FROM posts INNER Join post_tag ON post_tag.posts_id " + _
+		    "= posts.id INNER Join tags ON tags.id = post_tag.tags_id WHERE tags.name IN ('" + tagName + "') " + _
+		    "ORDER BY posts.date DESC;"
+		  End If
+		  
 		  Var offset As Integer = (currentPage * postsPerPage) - postsPerPage
 		  
 		  Return "SELECT DISTINCT posts.* FROM posts INNER Join post_tag ON post_tag.posts_id " + _
@@ -215,6 +276,19 @@ Protected Module SQL
 		  /// Returns the SQL statement to select all posts from the specified year limited
 		  /// to `postsPerPage` with an offset calculated from the passed `currentPage`.
 		  /// Excludes pages.
+		  
+		  If postsPerPage = -1 Then
+		    // All posts for this year - no pagination.
+		    If buildDrafts Then
+		      Return "SELECT * FROM posts WHERE dateYear='" + year.ToString + "' " + _
+		      "AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY date DESC;"
+		    Else
+		      Return "SELECT * FROM posts WHERE dateYear='" + year.ToString + "' " + _
+		      "AND isPage='0' AND isHomepage='0' AND isDraft=0 " + _
+		      "ORDER BY date DESC;"
+		    End If
+		  End If
 		  
 		  Var offset As Integer = (currentPage * postsPerPage) - postsPerPage
 		  

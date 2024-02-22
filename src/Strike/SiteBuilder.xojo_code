@@ -9,9 +9,17 @@ Protected Class SiteBuilder
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
 		  
-		  For Each f As FolderItem In folder.Children
+		  // Get the children of the folder in alphabetical name order
+		  Var orderedChildren() As FolderItem
+		  For Each child As FolderItem In folder.Children
+		    orderedChildren.Add(child)
+		  Next child
+		  orderedChildren.Sort(AddressOf FolderItemArraySort)
+		  
+		  ' For Each f As FolderItem In folder.Children
+		  For Each f As FolderItem In orderedChildren
 		    If f.IsFolder Then
-		      Var ni As New Strike.NavigationItem(f.Name, NavigationPermalink(f), Strike.Slugify(f.Name), parent)
+		      Var ni As New Strike.NavigationItem(f.Name.Titlecase, NavigationPermalink(f), Strike.Slugify(f.Name), parent)
 		      parent.Children.Add(AddNavigationChildren(ni, f))
 		    End If
 		  Next f
@@ -385,7 +393,7 @@ Protected Class SiteBuilder
 		  // As we know how many posts to list per page and we know how many posts there are, we can
 		  // calculate how many list pages we need.
 		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", 10)
-		  Var numListPages As Integer = Ceiling(postCount / postsPerPage)
+		  Var numListPages As Integer = If(postsPerPage = -1, 1, Ceiling(postCount / postsPerPage))
 		  
 		  // Construct any required pagination folders.
 		  If numListPages > 1 Then
@@ -490,15 +498,17 @@ Protected Class SiteBuilder
 		  // Create the root.
 		  SiteNavTree = New Strike.NavigationItem("root", "baseURL", "")
 		  
-		  // Add the home link.
-		  SiteNavTree.Children.Add(New Strike.NavigationItem("home", BaseURL, "home", SiteNavTree))
+		  // Add the home link if specified.
+		  If Config.Lookup("includeHomeLinkInNavigation", False) Then
+		    SiteNavTree.Children.Add(New Strike.NavigationItem("Home", BaseURL, "home", SiteNavTree))
+		  End If
 		  
 		  // Add the sections in the `/content` folder.
 		  SiteNavTree = AddNavigationChildren(SiteNavTree, Root.Child("content"))
 		  
-		  // Add the archive (if required).
+		  // Add the archive last (if required).
 		  If config.Lookup("archives", False) Then
-		    SiteNavTree.Children.Add(New Strike.NavigationItem("archive", BaseURL + "archive.html", "archives", SiteNavTree))
+		    SiteNavTree.Children.Add(New Strike.NavigationItem("Archives", BaseURL + "archive.html", "archives", SiteNavTree))
 		  End If
 		  
 		  // Convert the SiteNavTree into HTML and cache it.
@@ -1008,6 +1018,17 @@ Protected Class SiteBuilder
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21, Description = 412064656C656761746520666F7220736F7274696E6720616E206172726179206F6620466F6C6465724974656D7320616C7068616265746963616C6C79206279206E616D652E
+		Private Function FolderItemArraySort(f1 As FolderItem, f2 As FolderItem) As Integer
+		  /// A delegate for sorting an array of FolderItems alphabetically by name.
+		  
+		  If f1.Name > f2.Name Then Return 1
+		  If f1.Name < f2.Name Then Return -1
+		  Return 0
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21, Description = 52657475726E73207468652074656D706C6174652066696C6520746F2075736520746F2072656E646572207468697320706F73742E
 		Private Function GetTemplateFile(p As Strike.Post, postType As Strike.PostTypes) As FolderItem
 		  /// Returns the template file to use to render this post.
@@ -1204,8 +1225,8 @@ Protected Class SiteBuilder
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21, Description = 52657475726E7320612064696374696F6E61727920636F6E7461696E696E67207468652064656661756C7420636F6E6669672073657474696E677320666F72206120736974652E
-		Private Shared Function NewConfig() As Dictionary
+	#tag Method, Flags = &h0, Description = 52657475726E7320612064696374696F6E61727920636F6E7461696E696E67207468652064656661756C7420636F6E6669672073657474696E677320666F72206120736974652E
+		Shared Function NewConfig() As Dictionary
 		  /// Returns a dictionary containing the default config settings for a site.
 		  
 		  Var config As New Dictionary( _
@@ -1213,6 +1234,7 @@ Protected Class SiteBuilder
 		  "baseURL"     : "/", _
 		  "buildDrafts" : False, _
 		  "description"  : "My awesome site", _
+		  "includeHomeLinkInNavigation": False, _
 		  "postsPerPage": 10, _
 		  "rss"         : False, _
 		  "siteName"    : "My Site", _
@@ -1465,8 +1487,8 @@ Protected Class SiteBuilder
 		  
 		  // As we know how many posts to list per page and we know how many posts there are, we can
 		  // calculate how many list pages we need.
-		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", 10)
-		  Var numListPages As Integer = Ceiling(postCount / postsPerPage)
+		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", -1)
+		  Var numListPages As Integer = If(postsPerPage = -1, 1, Ceiling(postCount / postsPerPage))
 		  
 		  // Construct any required pagination folders.
 		  If numListPages > 1 Then
@@ -1580,8 +1602,8 @@ Protected Class SiteBuilder
 		  
 		  // As we know how many posts to list per page and we know how many posts there are, we can
 		  // calculate how many list pages we need.
-		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", 10)
-		  Var numListPages As Integer = Ceiling(postCount / postsPerPage)
+		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", -1)
+		  Var numListPages As Integer = If(postsPerPage = -1, 1, Ceiling(postCount / postsPerPage))
 		  
 		  // Construct any required pagination folders.
 		  If numListPages > 1 Then
@@ -1716,7 +1738,8 @@ Protected Class SiteBuilder
 		      rawLoop = match.SubExpressionString(0)
 		      
 		      // Store the character position of the start of this loop.
-		      Var startIndex As Integer = match.SubExpressionStartB(0)
+		      ' Var startIndex As Integer = match.SubExpressionStartB(0)
+		      Var startIndex As Integer = result.LeftBytes(match.SubExpressionStartB(0)).Length
 		      
 		      // Found a loop. Remove the {{foreach}} and {{endeach}} to get the loop contents.
 		      Var loopContents As String = rawLoop.Replace("{{foreach}}", "").Trim
@@ -1752,7 +1775,6 @@ Protected Class SiteBuilder
 		      
 		      // Insert the resolved loop at the start index of the rawLoop.
 		      result = result.Insert(resolvedLoop, startIndex)
-		      
 		    End If
 		    
 		    // Remove this raw loop.
@@ -1776,7 +1798,7 @@ Protected Class SiteBuilder
 		      Var tag As String = match.SubExpressionString(0)
 		      
 		      // Resolve the contents of this tag.
-		      Var resolvedTag As String = ResolveTag(tag, Nil, context)
+		      Var resolvedTag As String = ResolveTag(tag, post, context)
 		      
 		      // Replace tag with resolvedTag.
 		      result = result.Replace(tag, resolvedTag)
@@ -2138,17 +2160,21 @@ Protected Class SiteBuilder
 		    
 		    If tag = "date.year" Then Return post.Date.Year.ToString
 		    
+		    If tag = "date.shortYear" Then Return ShortYear(post.Date.Year.ToString)
+		    
+		    If tag = "firstParagraph" Then Return post.FirstParagraph(False)
+		    
 		    If tag = "permalink" Then Return post.URL
 		    
 		    If tag = "readingTime" Then Return Strike.MinutesToRead(post.RenderedMarkdown)
 		    
 		    If tag = "summary" Then Return post.Summary
 		    
+		    If tag = "tags" Then Return TagsAsHTML(post)
+		    
 		    If tag = "title" Then Return post.Title
 		    
 		    If tag = "wordCount" Then Return Strike.WordCount(post.RenderedMarkdown).ToString
-		    
-		    If tag = "tags" Then Return TagsAsHTML(post)
 		    
 		    // ------------------------------------------------------
 		    // Post data?
@@ -2197,6 +2223,14 @@ Protected Class SiteBuilder
 		  End Try
 		  
 		  Return section
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21, Description = 52657475726E7320746865206C6173742074776F20646967697473206F6620746865207061737365642034206469676974207965617220737472696E672E
+		Private Function ShortYear(year As String) As String
+		  /// Returns the last two digits of the passed 4 digit year string.
+		  
+		  Return year.Right(2)
 		End Function
 	#tag EndMethod
 
@@ -2473,7 +2507,7 @@ Protected Class SiteBuilder
 	#tag Constant, Name = DEFAULT_THEME, Type = String, Dynamic = False, Default = \"bee", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = SCHEMA, Type = String, Dynamic = False, Default = \"\n\nCREATE TABLE \"post_tag\" (\n\"id\" INTEGER UNIQUE PRIMARY KEY\x2C\n\"posts_id\" INTEGER NOT NULL REFERENCES \"posts.id\"(\"\") ON UPDATE CASCADE ON DELETE CASCADE\x2C\n\"tags_id\" INTEGER NOT NULL REFERENCES \"tags.id\"(\"\") ON UPDATE CASCADE ON DELETE CASCADE\n);\n\n\nCREATE TABLE \"posts\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"date\" INTEGER NOT NULL\x2C\n\"dateDay\" INTEGER NOT NULL\x2C\n\"dateMonth\" INTEGER NOT NULL\x2C\n\"dateYear\" INTEGER NOT NULL\x2C\n\"filePath\" TEXT NOT NULL\x2C\n\"hash\" TEXT NOT NULL\x2C\n\"isDraft\" INTEGER NOT NULL DEFAULT 0\x2C\n\"isHomepage\" INTEGER DEFAULT 0 NOT NULL\x2C\n\"isPage\" INTEGER NOT NULL DEFAULT 0\x2C\n\"lastUpdated\" TEXT NOT NULL\x2C\n\"markdown\" TEXT NOT NULL\x2C\n\"renderedMarkdown\" TEXT NOT NULL\x2C\n\"section\" TEXT NOT NULL\x2C\n\"slug\" TEXT NOT NULL\x2C\n\"title\" TEXT NOT NULL\x2C\n\"toml\" TEXT\x2C\n\"url\" TEXT NOT NULL\x2C\n\"verified\" INTEGER DEFAULT 0 NOT NULL\n);\n\n\nCREATE TABLE \"tags\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"name\" TEXT NOT NULL UNIQUE\n);\n", Scope = Private, Description = 5468652053514C20726571756972656420746F2063726561746520746865207369746527732064617461626173652E
+	#tag Constant, Name = SCHEMA, Type = String, Dynamic = False, Default = \"", Scope = Private, Description = 5468652053514C20726571756972656420746F2063726561746520746865207369746527732064617461626173652E
 	#tag EndConstant
 
 

@@ -5,7 +5,73 @@ Protected Module Strike
 		  /// Creates a new skeleton theme called `name` as a child of `enclosingFolder`.
 		  /// May raise an exception.
 		  
-		  #Pragma Warning "TODO"
+		  Var tout As TextOutputStream
+		  
+		  Var theme As FolderItem = enclosingFolder.Child("name")
+		  theme.CreateFolder
+		  
+		  // theme.json
+		  Var configDict As Dictionary = Strike.SiteBuilder.NewConfig
+		  configDict.Value("siteName") = name
+		  Var configJSON As String = GenerateJSON(configDict)
+		  Var themeFile As FolderItem = theme.Child("theme.json")
+		  tout = TextOutputStream.Create(themeFile)
+		  tout.Write(configJSON)
+		  tout.Close
+		  
+		  // assets.
+		  theme.Child("assets").CreateFolder
+		  
+		  // layouts.
+		  Var layouts As FolderItem = theme.Child("layouts")
+		  layouts.CreateFolder
+		  
+		  // partials.
+		  Var partials As FolderItem = layouts.Child("partials")
+		  partials.CreateFolder
+		  
+		  // 404.html
+		  Var page404 As FolderItem = layouts.Child("404.html")
+		  tout = TextOutputStream.Create(page404)
+		  #Pragma Warning "TODO: This constant needs populating"
+		  tout.Write(SKELETON_404)
+		  tout.Close
+		  
+		  // Home page.
+		  Var home As FolderItem = layouts.Child("home.html")
+		  tout = TextOutputStream.Create(home)
+		  #Pragma Warning "TODO: This constant needs populating"
+		  tout.Write(SKELETON_HOME)
+		  tout.Close
+		  
+		  // post.html
+		  Var postHTML As FolderItem = layouts.Child("post.html")
+		  tout = TextOutputStream.Create(postHTML)
+		  #Pragma Warning "TODO: This constant needs populating"
+		  tout.Write(SKELETON_POST)
+		  tout.Close
+		  
+		  // page.html
+		  Var pageHTML As FolderItem = layouts.Child("page.html")
+		  tout = TextOutputStream.Create(pageHTML)
+		  #Pragma Warning "TODO: This constant needs populating"
+		  tout.Write(SKELETON_PAGE)
+		  tout.Close
+		  
+		  // list.html
+		  Var list As FolderItem = layouts.Child("list.html")
+		  tout = TextOutputStream.Create(list)
+		  #Pragma Warning "TODO: This constant needs populating"
+		  tout.Write(SKELETON_LIST)
+		  tout.Close
+		  
+		  // tags.html
+		  Var tagsHTML As FolderItem = layouts.Child("tags.html")
+		  tout = TextOutputStream.Create(tagsHTML)
+		  #Pragma Warning "TODO: This constant needs populating"
+		  tout.Write(SKELETON_TAGS)
+		  tout.Close
+		  
 		End Sub
 	#tag EndMethod
 
@@ -279,6 +345,10 @@ Protected Module Strike
 		    Raise New Strike.Error("The configuration file is missing the `description` key.")
 		  End If
 		  
+		  If Not config.HasKey("includeHomeLinkInNavigation") Then
+		    Raise New Strike.Error("The configuration file is missing the `includeHomeLinkInNavigation` key.")
+		  End If
+		  
 		  If Not config.HasKey("postsPerPage") Then
 		    Raise New Strike.Error("The configuration file is missing the `postsPerPage` key.")
 		  End If
@@ -357,6 +427,7 @@ Protected Module Strike
 		    Raise New InvalidArgumentException("The site is missing the `themes` folder.")
 		  End If
 		  For Each theme As FolderItem In siteFolder.Child("themes").Children
+		    If theme.Name = ".DS_Store" Then Continue
 		    ValidateTheme(theme)
 		  Next theme
 		  
@@ -414,6 +485,10 @@ Protected Module Strike
 		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing a `list.html` file.")
 		  End If
 		  
+		  If Not layouts.Child("tags.html").Exists Then
+		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing a `tags.html` file.")
+		  End If
+		  
 		  If Not layouts.Child("partials").Exists Then
 		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing the `layouts/partials` folder.")
 		  End If
@@ -461,13 +536,31 @@ Protected Module Strike
 	#tag Constant, Name = REGEX_STRIP_HTML, Type = String, Dynamic = False, Default = \"<(\?:[^>\x3D]|\x3D\'[^\']*\'|\x3D\"[^\"]*\"|\x3D[^\'\"][^\\s>]*)*>", Scope = Private, Description = 526567756C61722065787072657373696F6E20666F72206D61746368696E672048544D4C20746167732E
 	#tag EndConstant
 
+	#tag Constant, Name = SKELETON_404, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SKELETON_HOME, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SKELETON_LIST, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SKELETON_PAGE, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SKELETON_POST, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = SKELETON_TAGS, Type = String, Dynamic = False, Default = \"", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = VERSION_MAJOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"0", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
 
 

@@ -46,6 +46,32 @@ Protected Class Post
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function FirstParagraph(stripHTML As Boolean) As String
+		  /// Returns the first paragraph of the post.
+		  
+		  Var rx As New RegEx
+		  rx.SearchPattern = "<p>(.+)<\/p>"
+		  
+		  Var match As RegExMatch
+		  match = rx.Search(RenderedMarkdown)
+		  If match <> Nil Then
+		    If stripHTML Then
+		      Return StripHTMLTags(match.SubExpressionString(0))
+		    Else
+		      Return match.SubExpressionString(0)
+		    End If
+		  End If
+		  
+		  If stripHTML Then
+		    Return StripHTMLTags(RenderedMarkdown)
+		  Else
+		    Return RenderedMarkdown
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0, Description = 506172736573207468697320706F737427732066726F6E746D61747465722028696620616E792920696E746F207468697320706F737427732060446174616020616E642067756172616E746565642070726F706572746965732E2057696C6C20726169736520612060537472696B652E4572726F7260206966207468652066726F6E746D617474657220697320696E76616C69642E
 		Sub ParseFrontmatter()
 		  /// Parses this post's frontmatter (if any) into this post's `Data` and guaranteed properties.
