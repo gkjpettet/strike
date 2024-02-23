@@ -352,6 +352,38 @@ Inherits ConsoleApplication
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Command"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="CommandTypes"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Build"
+				"1 - Create"
+				"2 - Help"
+				"3 - Version"
+				"4 - Undefined"
+				"5 - Set"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Subcommand"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

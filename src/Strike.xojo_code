@@ -357,6 +357,10 @@ Protected Module Strike
 		    Raise New Strike.Error("The configuration file is missing the `rss` key.")
 		  End If
 		  
+		  If Not config.HasKey("rssExcludedSections") Then
+		    Raise New Strike.Error("The configuration file is missing the `rssExcludedSections` key.")
+		  End If
+		  
 		  If Not config.HasKey("theme") Then
 		    Raise New Strike.Error("The configuration file is missing the `theme` key.")
 		  End If

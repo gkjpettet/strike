@@ -33,6 +33,8 @@ Protected Class SiteBuilder
 		Private Sub AddPostToDatabase(post As Strike.Post)
 		  /// Adds the passed post to the site's database.
 		  
+		  #Pragma Warning "TODO: Add first paragraph to DB too at this point rather than computing it"
+		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
@@ -160,6 +162,9 @@ Protected Class SiteBuilder
 		  
 		  ValidateTheme(Self.Theme)
 		  
+		  // Clear out the RSS items before we render the posts.
+		  RSSItems.ResizeTo(-1)
+		  
 		  // Publish the 404 page.
 		  Theme.Child("layouts").Child("404.html").CopyTo(publicFolder)
 		  
@@ -190,7 +195,6 @@ Protected Class SiteBuilder
 		  BuildLists(Root.Child("content"))
 		  
 		  // RSS.
-		  RSSItems.ResizeTo(-1)
 		  If Config.Lookup("rss", False) Then BuildRSSFeed
 		  
 		  // Run post build scripts.
@@ -530,7 +534,7 @@ Protected Class SiteBuilder
 		  xmlRoot.SetAttribute("version", "2.0")
 		  
 		  Var channel As XMLNode = xmlRoot.AppendChild(xml.CreateElement("channel"))
-		  Call XmlNodeWithText(xml, channel, "title", Config.Lookup("title", "Default Title"))
+		  Call XmlNodeWithText(xml, channel, "title", Config.Lookup("siteName", "Default Title"))
 		  Call XmlNodeWithText(xml, channel, "description", Config.Lookup("description", ""))
 		  Call XmlNodeWithText(xml, channel, "link", BaseURL)
 		  
@@ -1186,7 +1190,8 @@ Protected Class SiteBuilder
 		  // Create the builder instance and set the root and config file destinations.
 		  Var builder As New Strike.SiteBuilder
 		  builder.Root = siteFolder
-		  builder.Config = ParseTOML(FileContents(builder.Root.Child("config.toml")))
+		  
+		  LoadConfig(builder)
 		  
 		  // Connect to the site's database.
 		  builder.DatabaseFile = builder.Root.Child("site.data")
@@ -1195,6 +1200,22 @@ Protected Class SiteBuilder
 		  Return builder
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21, Description = 4C6F6164732074686520636F6E6669672066696C6520666F722074686520706173736564206275696C64657220696E7374616E63652E
+		Private Shared Sub LoadConfig(builder As Strike.SiteBuilder)
+		  /// Loads the config file for the passed builder instance.
+		  
+		  builder.Config = ParseTOML(FileContents(builder.Root.Child("config.toml")))
+		  
+		  // When a TOML array is parsed we get a Variant array. We need a String array...
+		  Var vExcluded() As Variant = builder.Config.Value("rssExcludedSections")
+		  builder.Config.Remove("rssExcludedSections")
+		  For Each section As String In vExcluded
+		    builder.mRSSExcludedSections.Add(section)
+		  Next section
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21, Description = 52657475726E7320746865207075626C6963207065726D616C696E6B20666F72207468652073706563696669656420666F6C64657220696E2074686520602F636F6E74656E746020666F6C6465722E
@@ -1229,16 +1250,19 @@ Protected Class SiteBuilder
 		Shared Function NewConfig() As Dictionary
 		  /// Returns a dictionary containing the default config settings for a site.
 		  
+		  Var rssExcludedSections() As String
+		  
 		  Var config As New Dictionary( _
-		  "archives"    : False, _
-		  "baseURL"     : "/", _
-		  "buildDrafts" : False, _
-		  "description"  : "My awesome site", _
-		  "includeHomeLinkInNavigation": False, _
-		  "postsPerPage": 10, _
-		  "rss"         : False, _
-		  "siteName"    : "My Site", _
-		  "theme"       : DEFAULT_THEME _
+		  "archives"                    : False, _
+		  "baseURL"                     : "/", _
+		  "buildDrafts"                 : False, _
+		  "description"                 : "My awesome site", _
+		  "includeHomeLinkInNavigation" : False, _
+		  "postsPerPage"                : 10, _
+		  "rss"                         : False, _
+		  "rssExcludedSections"         : rssExcludedSections, _
+		  "siteName"                    : "My Site", _
+		  "theme"                       : DEFAULT_THEME _
 		  )
 		  
 		  Return config
@@ -1872,9 +1896,10 @@ Protected Class SiteBuilder
 		  // Write the contents to disk.
 		  WriteToFile(OutputPathForPost(p), result.Trim)
 		  
-		  // Add this page to rssItems (if desired).
-		  If posttype <> PostTypes.Homepage And Config.Lookup("rss", False) Then
-		    RSSItems.Add(New Strike.RSSItem(p.Title, p.URL, p.Date, p.Summary))
+		  // Add this post to our RSS items array (if desired).
+		  If postType = PostTypes.Post And Config.Lookup("rss", False) And _ 
+		    mRSSExcludedSections.IndexOf(p.Section) = -1 Then
+		    RSSItems.Add(New Strike.RSSItem(p.Title, p.URL, p.Date, p.FirstParagraph(True)))
 		  End If
 		  
 		  
@@ -1956,8 +1981,8 @@ Protected Class SiteBuilder
 		  
 		  // As we know how many posts to list per page and we know how many posts there are, we can
 		  // calculate how many list pages we need.
-		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", 10)
-		  Var numListPages As Integer = Ceiling(postCount / postsPerPage)
+		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", -1)
+		  Var numListPages As Integer = If(postsPerPage = -1, 1, Ceiling(postCount / postsPerPage))
 		  
 		  // Construct any required pagination folders.
 		  If numListPages > 1 Then
@@ -2471,6 +2496,10 @@ Protected Class SiteBuilder
 
 	#tag Property, Flags = &h21, Description = 5468652053514C6974652064617461626173652066696C652E
 		Private DatabaseFile As FolderItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mRSSExcludedSections() As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0, Description = 54686520736974652773207075626C696320666F6C6465722E2054686973206973207468652064657374696E6174696F6E20746861742074686520736974652077696C6C206265207772697474656E20746F2E
