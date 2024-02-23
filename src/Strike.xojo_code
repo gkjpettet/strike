@@ -5,6 +5,8 @@ Protected Module Strike
 		  /// Creates a new skeleton theme called `name` as a child of `enclosingFolder`.
 		  /// May raise an exception.
 		  
+		  #Pragma Warning "TODO: Need to write out the skeleton theme partial files"
+		  
 		  Var tout As TextOutputStream
 		  
 		  Var theme As FolderItem = enclosingFolder.Child("name")
@@ -33,42 +35,36 @@ Protected Module Strike
 		  // 404.html
 		  Var page404 As FolderItem = layouts.Child("404.html")
 		  tout = TextOutputStream.Create(page404)
-		  #Pragma Warning "TODO: This constant needs populating"
 		  tout.Write(SKELETON_404)
 		  tout.Close
 		  
 		  // Home page.
 		  Var home As FolderItem = layouts.Child("home.html")
 		  tout = TextOutputStream.Create(home)
-		  #Pragma Warning "TODO: This constant needs populating"
 		  tout.Write(SKELETON_HOME)
 		  tout.Close
 		  
 		  // post.html
 		  Var postHTML As FolderItem = layouts.Child("post.html")
 		  tout = TextOutputStream.Create(postHTML)
-		  #Pragma Warning "TODO: This constant needs populating"
 		  tout.Write(SKELETON_POST)
 		  tout.Close
 		  
 		  // page.html
 		  Var pageHTML As FolderItem = layouts.Child("page.html")
 		  tout = TextOutputStream.Create(pageHTML)
-		  #Pragma Warning "TODO: This constant needs populating"
 		  tout.Write(SKELETON_PAGE)
 		  tout.Close
 		  
 		  // list.html
 		  Var list As FolderItem = layouts.Child("list.html")
 		  tout = TextOutputStream.Create(list)
-		  #Pragma Warning "TODO: This constant needs populating"
 		  tout.Write(SKELETON_LIST)
 		  tout.Close
 		  
 		  // tags.html
 		  Var tagsHTML As FolderItem = layouts.Child("tags.html")
 		  tout = TextOutputStream.Create(tagsHTML)
-		  #Pragma Warning "TODO: This constant needs populating"
 		  tout.Write(SKELETON_TAGS)
 		  tout.Close
 		  
@@ -540,22 +536,22 @@ Protected Module Strike
 	#tag Constant, Name = REGEX_STRIP_HTML, Type = String, Dynamic = False, Default = \"<(\?:[^>\x3D]|\x3D\'[^\']*\'|\x3D\"[^\"]*\"|\x3D[^\'\"][^\\s>]*)*>", Scope = Private, Description = 526567756C61722065787072657373696F6E20666F72206D61746368696E672048544D4C20746167732E
 	#tag EndConstant
 
-	#tag Constant, Name = SKELETON_404, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag Constant, Name = SKELETON_404, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t<h1>404</h1>\n\n{{partial footer}}", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = SKELETON_HOME, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag Constant, Name = SKELETON_HOME, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n<p>This is the static home page</p>\n\n{{partial footer}}", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = SKELETON_LIST, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag Constant, Name = SKELETON_LIST, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t\t\t<section class\x3D\"list-content\">\n\t\t\t\t{{foreach}}\n\t\t\t\t<div class\x3D\"post\">\n\t\t\t\t\t<div class\x3D\"post-date\">{{date.shortMonth}} {{date.day}} {{date.Year}}</div>\n\t\t\t\t\t<div class\x3D\"post-title\"><a href\x3D\"{{permalink}}\">{{title}}</a></div>\n\t\t\t\t</div>\n\t\t\t\t{{endeach}}\n\t\t\t</section>\n\n{{partial footer}}", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = SKELETON_PAGE, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag Constant, Name = SKELETON_PAGE, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t\t\t<section class\x3D\"page-content\">\n\t\t\t\t{{content}}\n\t\t\t</section>\n\n{{partial footer}}", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = SKELETON_POST, Type = String, Dynamic = False, Default = \"", Scope = Protected
+	#tag Constant, Name = SKELETON_POST, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t\t\t<section class\x3D\"post-content\">\n\t\t\t\t{{content}}\n\t\t\t</section>\n\n{{partial footer}}", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = SKELETON_TAGS, Type = String, Dynamic = False, Default = \"", Scope = Private
+	#tag Constant, Name = SKELETON_TAGS, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t<h3 class\x3D\"tag-listing-heading\">Posts tagged with <span class\x3D\"tag\">{{list.tag}}</span></h3>\n\t\n\t<section class\x3D\"tagged-posts\">\n\t\t{{foreach}}\n\t\t<div class\x3D\"post\">\n\t\t\t<div class\x3D\"post-date\">{{date.shortMonth}} {{date.day}} {{date.Year}}</div>\n\t\t\t<div class\x3D\"post-title\"><a href\x3D\"{{permalink}}\">{{title}}</a></div>\n\t\t</div>\n\t\t{{endeach}}\n\t</section>\n\n{{partial footer}}", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = VERSION_MAJOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
