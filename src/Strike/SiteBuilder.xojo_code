@@ -33,8 +33,6 @@ Protected Class SiteBuilder
 		Private Sub AddPostToDatabase(post As Strike.Post)
 		  /// Adds the passed post to the site's database.
 		  
-		  #Pragma Warning "TODO: Add first paragraph to DB too at this point rather than computing it"
-		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
@@ -48,6 +46,8 @@ Protected Class SiteBuilder
 		  dRow.Column("dateMonth") = post.Date.Month
 		  dRow.Column("dateDay") = post.Date.Day
 		  dRow.Column("filePath") = post.FilePath
+		  dRow.Column("firstParagraph") = post.FirstParagraph
+		  dRow.Column("firstParagraphStripped") = post.FirstParagraphStripped
 		  dRow.Column("hash") = post.Hash
 		  dRow.Column("isDraft") = post.IsDraft
 		  dRow.Column("isHomepage") = post.IsHomepage
@@ -981,6 +981,19 @@ Protected Class SiteBuilder
 		  // Render the Markdown.
 		  post.RenderedMarkdown = MarkdownKit.ToHTML(post.Markdown)
 		  
+		  /// Computes the first paragraph for this post (HTML stripped and not).
+		  Var rx As New RegEx
+		  rx.SearchPattern = "<p>(.+)<\/p>"
+		  Var match As RegExMatch
+		  match = rx.Search(post.RenderedMarkdown)
+		  If match <> Nil Then
+		    post.FirstParagraphStripped = StripHTMLTags(match.SubExpressionString(0))
+		    post.FirstParagraph = match.SubExpressionString(0)
+		  Else
+		    post.FirstParagraphStripped = StripHTMLTags(post.RenderedMarkdown)
+		    post.FirstParagraph = post.RenderedMarkdown
+		  End If
+		  
 		  // Add this post to the database.
 		  AddPostToDatabase(post)
 		  
@@ -1367,6 +1380,10 @@ Protected Class SiteBuilder
 		  Catch e As RuntimeException
 		    Raise New Strike.Error("Invalid post file path. ID = " + postID.ToString + ", filePath: " + p.FilePath)
 		  End Try
+		  
+		  p.FirstParagraph = row.Column("firstParagraph").StringValue
+		  
+		  p.FirstParagraphStripped = row.Column("firstParagraphStripped").StringValue
 		  
 		  p.Hash = row.Column("hash").StringValue
 		  
@@ -1899,7 +1916,7 @@ Protected Class SiteBuilder
 		  // Add this post to our RSS items array (if desired).
 		  If postType = PostTypes.Post And Config.Lookup("rss", False) And _ 
 		    mRSSExcludedSections.IndexOf(p.Section) = -1 Then
-		    RSSItems.Add(New Strike.RSSItem(p.Title, p.URL, p.Date, p.FirstParagraph(True)))
+		    RSSItems.Add(New Strike.RSSItem(p.Title, p.URL, p.Date, p.FirstParagraphStripped))
 		  End If
 		  
 		  
@@ -2187,7 +2204,7 @@ Protected Class SiteBuilder
 		    
 		    If tag = "date.shortYear" Then Return ShortYear(post.Date.Year.ToString)
 		    
-		    If tag = "firstParagraph" Then Return post.FirstParagraph(False)
+		    If tag = "firstParagraph" Then Return post.FirstParagraph
 		    
 		    If tag = "permalink" Then Return post.URL
 		    
@@ -2536,7 +2553,7 @@ Protected Class SiteBuilder
 	#tag Constant, Name = DEFAULT_THEME, Type = String, Dynamic = False, Default = \"bee", Scope = Public
 	#tag EndConstant
 
-	#tag Constant, Name = SCHEMA, Type = String, Dynamic = False, Default = \"", Scope = Private, Description = 5468652053514C20726571756972656420746F2063726561746520746865207369746527732064617461626173652E
+	#tag Constant, Name = SCHEMA, Type = String, Dynamic = False, Default = \"\n\nCREATE TABLE \"post_tag\" (\n\"id\" INTEGER UNIQUE PRIMARY KEY\x2C\n\"posts_id\" INTEGER NOT NULL\x2C\n\"tags_id\" INTEGER NOT NULL\n);\n\n\nCREATE TABLE \"posts\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"date\" INTEGER NOT NULL\x2C\n\"dateDay\" INTEGER NOT NULL\x2C\n\"dateMonth\" INTEGER NOT NULL\x2C\n\"dateYear\" INTEGER NOT NULL\x2C\n\"filePath\" TEXT NOT NULL\x2C\n\"hash\" TEXT NOT NULL\x2C\n\"isDraft\" INTEGER NOT NULL DEFAULT 0\x2C\n\"isHomepage\" INTEGER DEFAULT 0 NOT NULL\x2C\n\"isPage\" INTEGER NOT NULL DEFAULT 0\x2C\n\"lastUpdated\" TEXT NOT NULL\x2C\n\"markdown\" TEXT\x2C\n\"renderedMarkdown\" TEXT\x2C\n\"section\" TEXT NOT NULL\x2C\n\"slug\" TEXT NOT NULL\x2C\n\"title\" TEXT NOT NULL\x2C\n\"toml\" TEXT\x2C\n\"url\" TEXT NOT NULL\x2C\n\"verified\" INTEGER DEFAULT 0 NOT NULL\x2C\n\"firstParagraph\" TEXT\x2C\n\"firstParagraphStripped\" TEXT\n);\n\n\nCREATE TABLE \"tags\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"name\" TEXT NOT NULL UNIQUE\n);\n", Scope = Private, Description = 5468652053514C20726571756972656420746F2063726561746520746865207369746527732064617461626173652E
 	#tag EndConstant
 
 

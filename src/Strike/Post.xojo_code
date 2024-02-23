@@ -46,32 +46,6 @@ Protected Class Post
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function FirstParagraph(stripHTML As Boolean) As String
-		  /// Returns the first paragraph of the post.
-		  
-		  Var rx As New RegEx
-		  rx.SearchPattern = "<p>(.+)<\/p>"
-		  
-		  Var match As RegExMatch
-		  match = rx.Search(RenderedMarkdown)
-		  If match <> Nil Then
-		    If stripHTML Then
-		      Return StripHTMLTags(match.SubExpressionString(0))
-		    Else
-		      Return match.SubExpressionString(0)
-		    End If
-		  End If
-		  
-		  If stripHTML Then
-		    Return StripHTMLTags(RenderedMarkdown)
-		  Else
-		    Return RenderedMarkdown
-		  End If
-		  
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0, Description = 506172736573207468697320706F737427732066726F6E746D61747465722028696620616E792920696E746F207468697320706F737427732060446174616020616E642067756172616E746565642070726F706572746965732E2057696C6C20726169736520612060537472696B652E4572726F7260206966207468652066726F6E746D617474657220697320696E76616C69642E
 		Sub ParseFrontmatter()
 		  /// Parses this post's frontmatter (if any) into this post's `Data` and guaranteed properties.
@@ -170,6 +144,14 @@ Protected Class Post
 
 	#tag Property, Flags = &h0, Description = 5468652066696C65207061746820666F72207468697320706F7374277320736F757263652066696C652E
 		FilePath As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0, Description = 54686520666972737420706172616772617068206F66207468697320706F737420696E636C7564696E6720616E792048544D4C20746167732074686174206D696768742062652070726573656E742E
+		FirstParagraph As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0, Description = 54686520666972737420706172616772617068206F66207468697320706F7374207769746820616E792048544D4C20746167732073747269707065642E
+		FirstParagraphStripped As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0, Description = 5468697320706F7374277320544F4D4C2066726F6E746D61747465722E204D617920626520656D7074792E
