@@ -1,76 +1,5 @@
 #tag Module
 Protected Module Strike
-	#tag Method, Flags = &h1, Description = 437265617465732061206E657720736B656C65746F6E207468656D652063616C6C656420606E616D65602061732061206368696C64206F662060656E636C6F73696E67466F6C646572602E
-		Protected Sub CreateTheme(name As String, enclosingFolder As FolderItem)
-		  /// Creates a new skeleton theme called `name` as a child of `enclosingFolder`.
-		  /// May raise an exception.
-		  
-		  #Pragma Warning "TODO: Need to write out the skeleton theme partial files"
-		  
-		  Var tout As TextOutputStream
-		  
-		  Var theme As FolderItem = enclosingFolder.Child("name")
-		  theme.CreateFolder
-		  
-		  // theme.json
-		  Var configDict As Dictionary = Strike.SiteBuilder.NewConfig
-		  configDict.Value("siteName") = name
-		  Var configJSON As String = GenerateJSON(configDict)
-		  Var themeFile As FolderItem = theme.Child("theme.json")
-		  tout = TextOutputStream.Create(themeFile)
-		  tout.Write(configJSON)
-		  tout.Close
-		  
-		  // assets.
-		  theme.Child("assets").CreateFolder
-		  
-		  // layouts.
-		  Var layouts As FolderItem = theme.Child("layouts")
-		  layouts.CreateFolder
-		  
-		  // partials.
-		  Var partials As FolderItem = layouts.Child("partials")
-		  partials.CreateFolder
-		  
-		  // 404.html
-		  Var page404 As FolderItem = layouts.Child("404.html")
-		  tout = TextOutputStream.Create(page404)
-		  tout.Write(SKELETON_404)
-		  tout.Close
-		  
-		  // Home page.
-		  Var home As FolderItem = layouts.Child("home.html")
-		  tout = TextOutputStream.Create(home)
-		  tout.Write(SKELETON_HOME)
-		  tout.Close
-		  
-		  // post.html
-		  Var postHTML As FolderItem = layouts.Child("post.html")
-		  tout = TextOutputStream.Create(postHTML)
-		  tout.Write(SKELETON_POST)
-		  tout.Close
-		  
-		  // page.html
-		  Var pageHTML As FolderItem = layouts.Child("page.html")
-		  tout = TextOutputStream.Create(pageHTML)
-		  tout.Write(SKELETON_PAGE)
-		  tout.Close
-		  
-		  // list.html
-		  Var list As FolderItem = layouts.Child("list.html")
-		  tout = TextOutputStream.Create(list)
-		  tout.Write(SKELETON_LIST)
-		  tout.Close
-		  
-		  // tags.html
-		  Var tagsHTML As FolderItem = layouts.Child("tags.html")
-		  tout = TextOutputStream.Create(tagsHTML)
-		  tout.Write(SKELETON_TAGS)
-		  tout.Close
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h1, Description = 476574732074686520737472696E6720636F6E74656E7473206F6620746865207061737365642066696C652E205374616E6461726469736573206C696E6520656E64696E677320746F20554E49582E204D617920726169736520612060537472696B652E4572726F72602E
 		Protected Function FileContents(file As FolderItem) As String
 		  /// Gets the string contents of the passed file.
@@ -451,6 +380,7 @@ Protected Module Strike
 		  If Not theme.Child("theme.json").Exists Then
 		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing its `theme.json` file.")
 		  End If
+		  ValidateThemeFile(theme.Child("theme.json"))
 		  
 		  // /assets
 		  If Not theme.Child("assets").Exists Then
@@ -495,6 +425,50 @@ Protected Module Strike
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1, Description = 4173736572747320746865207061737365642066696C6520697320612076616C696420607468656D652E6A736F6E602066696C652E
+		Protected Sub ValidateThemeFile(themeFile As FolderItem)
+		  /// Asserts the passed file is a valid `theme.json` file.
+		  
+		  If themeFile = Nil Or Not themeFile.Exists Then
+		    Raise New Strike.Error("`theme.json` does not exist.")
+		  End If
+		  
+		  If themeFile.IsFolder Then
+		    Raise New Strike.Error("`theme.json` must be a file, not a folder.")
+		  End If
+		  
+		  Var themeJSON As String
+		  Try
+		    Var tin As TextInputStream = TextInputStream.Open(themeFile)
+		    themeJSON = tin.ReadAll
+		    tin.Close
+		  Catch e As IOException
+		    Raise New Strike.Error("Unable to read the contents of `" + themeFile.NativePath + "`.")
+		  End Try
+		  
+		  Var themeDict As Dictionary
+		  Try
+		    themeDict = ParseJSON(themeJSON)
+		  Catch e As JSONException
+		    Raise New Strike.Error("Invalid JSON in `" + themeFile.NativePath + "`: " + e.Message)
+		  End Try
+		  
+		  If Not themeDict.HasKey("name") Then
+		    Raise New Strike.Error("The theme file (`" + themeFile.NativePath + "`) is missing the `name` key.")
+		  End If
+		  
+		  If Not themeDict.HasKey("description") Then
+		    Raise New Strike.Error("The theme file (`" + themeFile.NativePath + "`) is missing the `description` key.")
+		  End If
+		  
+		  If Not themeDict.HasKey("minVersion") Then
+		    Raise New Strike.Error("The theme file (`" + themeFile.NativePath + "`) is missing the `minVersion` key.")
+		  End If
+		  #Pragma Warning "TODO: Assert the theme's version is compatible"
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1, Description = 52657475726E7320746865206E756D626572206F6620776F72647320696E207468652070617373656420737472696E672E
 		Protected Function WordCount(s As String) As Integer
 		  /// Returns the number of words in the passed string.
@@ -534,24 +508,6 @@ Protected Module Strike
 
 
 	#tag Constant, Name = REGEX_STRIP_HTML, Type = String, Dynamic = False, Default = \"<(\?:[^>\x3D]|\x3D\'[^\']*\'|\x3D\"[^\"]*\"|\x3D[^\'\"][^\\s>]*)*>", Scope = Private, Description = 526567756C61722065787072657373696F6E20666F72206D61746368696E672048544D4C20746167732E
-	#tag EndConstant
-
-	#tag Constant, Name = SKELETON_404, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t<h1>404</h1>\n\n{{partial footer}}", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = SKELETON_HOME, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n<p>This is the static home page</p>\n\n{{partial footer}}", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = SKELETON_LIST, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t\t\t<section class\x3D\"list-content\">\n\t\t\t\t{{foreach}}\n\t\t\t\t<div class\x3D\"post\">\n\t\t\t\t\t<div class\x3D\"post-date\">{{date.shortMonth}} {{date.day}} {{date.Year}}</div>\n\t\t\t\t\t<div class\x3D\"post-title\"><a href\x3D\"{{permalink}}\">{{title}}</a></div>\n\t\t\t\t</div>\n\t\t\t\t{{endeach}}\n\t\t\t</section>\n\n{{partial footer}}", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = SKELETON_PAGE, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t\t\t<section class\x3D\"page-content\">\n\t\t\t\t{{content}}\n\t\t\t</section>\n\n{{partial footer}}", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = SKELETON_POST, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t\t\t<section class\x3D\"post-content\">\n\t\t\t\t{{content}}\n\t\t\t</section>\n\n{{partial footer}}", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = SKELETON_TAGS, Type = String, Dynamic = False, Default = \"{{partial header}}\n\t\t\t\t\t\n\t<h3 class\x3D\"tag-listing-heading\">Posts tagged with <span class\x3D\"tag\">{{list.tag}}</span></h3>\n\t\n\t<section class\x3D\"tagged-posts\">\n\t\t{{foreach}}\n\t\t<div class\x3D\"post\">\n\t\t\t<div class\x3D\"post-date\">{{date.shortMonth}} {{date.day}} {{date.Year}}</div>\n\t\t\t<div class\x3D\"post-title\"><a href\x3D\"{{permalink}}\">{{title}}</a></div>\n\t\t</div>\n\t\t{{endeach}}\n\t</section>\n\n{{partial footer}}", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = VERSION_MAJOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private

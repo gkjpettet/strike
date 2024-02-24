@@ -236,7 +236,7 @@ Inherits ConsoleApplication
 		    Print("A single post and a simple page have been created in " + Colourise("/content", Colour.Magenta) + _
 		    ". A simple default theme called ")
 		    
-		    Print("'" + builder.DEFAULT_THEME + "' has been created for you in " + _
+		    Print("'" + builder.DefaultTheme + "' has been created for you in " + _
 		    Colourise("/themes", Colour.Magenta) + ".")
 		    
 		    Print("Feel free to create your own with " + Colourise("strike create theme [name]", Colour.Magenta) + ".")
@@ -257,7 +257,28 @@ Inherits ConsoleApplication
 		  Using Rainbow
 		  
 		  Try
-		    Strike.CreateTheme(themeName, SpecialFolder.CurrentWorkingDirectory)
+		    // Get the skeleton theme bundled with the app.
+		    Var newTheme As FolderItem = SpecialFolder.Resource("skeleton")
+		    
+		    // Rename it.
+		    newTheme.Name = themeName
+		    
+		    // Copy the skeleton theme to the current working directory.
+		    newTheme.CopyTo(SpecialFolder.CurrentWorkingDirectory)
+		    
+		    // Open the theme file and parse its JSON.
+		    Var themeFile As FolderItem = newTheme.Child("theme.json")
+		    Var tin As TextInputStream = TextInputStream.Open(themeFile)
+		    Var themeJSON As String = tin.ReadAll
+		    tin.Close
+		    Var themeDict As Dictionary = ParseJSON(themeJSON)
+		    
+		    // Rename the theme and overwrite the theme file with the updated JSON.
+		    themeDict.Value("name") = themeName
+		    Var tout As TextOutputStream = TextOutputStream.Create(themeFile)
+		    tout.Write(GenerateJSON(themeDict))
+		    tout.Close
+		    
 		    #If TargetWindows
 		      //  The tick doesn't display in the Windows Command Prompt...
 		      Print(Colourise("Success.︎", Colour.Green))

@@ -796,7 +796,7 @@ Protected Class SiteBuilder
 		  End Try
 		  
 		  // Copy the default theme to the `themes` folder.
-		  Var defaultTheme As FolderItem = SpecialFolder.Resource("themes").Child(DEFAULT_THEME)
+		  Var defaultTheme As FolderItem = SpecialFolder.Resource("themes").Child(builder.DefaultTheme)
 		  defaultTheme.CopyTo(builder.Root.Child("themes"))
 		  
 		  // Initialise the site's configuration.
@@ -1275,7 +1275,7 @@ Protected Class SiteBuilder
 		  "rss"                         : False, _
 		  "rssExcludedSections"         : rssExcludedSections, _
 		  "siteName"                    : "My Site", _
-		  "theme"                       : DEFAULT_THEME _
+		  "theme"                       : DefaultTheme _
 		  )
 		  
 		  Return config
@@ -2515,6 +2515,10 @@ Protected Class SiteBuilder
 		Private DatabaseFile As FolderItem
 	#tag EndProperty
 
+	#tag Property, Flags = &h0, Description = 546865206E616D65206F6620746865207468656D6520746F20757365207768656E206372656174696E672061206E657720736974652E
+		Shared DefaultTheme As String = "skeleton"
+	#tag EndProperty
+
 	#tag Property, Flags = &h21
 		Private mRSSExcludedSections() As String
 	#tag EndProperty
@@ -2542,16 +2546,13 @@ Protected Class SiteBuilder
 	#tag ComputedProperty, Flags = &h0, Description = 5468652063757272656E74207468656D6520746F207573652E
 		#tag Getter
 			Get
-			  Return Root.Child("themes").Child(Config.Lookup("theme", DEFAULT_THEME))
+			  Return Root.Child("themes").Child(Config.Lookup("theme", DefaultTheme))
 			  
 			End Get
 		#tag EndGetter
 		Theme As FolderItem
 	#tag EndComputedProperty
 
-
-	#tag Constant, Name = DEFAULT_THEME, Type = String, Dynamic = False, Default = \"bee", Scope = Public
-	#tag EndConstant
 
 	#tag Constant, Name = SCHEMA, Type = String, Dynamic = False, Default = \"\n\nCREATE TABLE \"post_tag\" (\n\"id\" INTEGER UNIQUE PRIMARY KEY\x2C\n\"posts_id\" INTEGER NOT NULL\x2C\n\"tags_id\" INTEGER NOT NULL\n);\n\n\nCREATE TABLE \"posts\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"date\" INTEGER NOT NULL\x2C\n\"dateDay\" INTEGER NOT NULL\x2C\n\"dateMonth\" INTEGER NOT NULL\x2C\n\"dateYear\" INTEGER NOT NULL\x2C\n\"filePath\" TEXT NOT NULL\x2C\n\"hash\" TEXT NOT NULL\x2C\n\"isDraft\" INTEGER NOT NULL DEFAULT 0\x2C\n\"isHomepage\" INTEGER DEFAULT 0 NOT NULL\x2C\n\"isPage\" INTEGER NOT NULL DEFAULT 0\x2C\n\"lastUpdated\" TEXT NOT NULL\x2C\n\"markdown\" TEXT\x2C\n\"renderedMarkdown\" TEXT\x2C\n\"section\" TEXT NOT NULL\x2C\n\"slug\" TEXT NOT NULL\x2C\n\"title\" TEXT NOT NULL\x2C\n\"toml\" TEXT\x2C\n\"url\" TEXT NOT NULL\x2C\n\"verified\" INTEGER DEFAULT 0 NOT NULL\x2C\n\"firstParagraph\" TEXT\x2C\n\"firstParagraphStripped\" TEXT\n);\n\n\nCREATE TABLE \"tags\" (\n\"id\" INTEGER PRIMARY KEY UNIQUE\x2C\n\"name\" TEXT NOT NULL UNIQUE\n);\n", Scope = Private, Description = 5468652053514C20726571756972656420746F2063726561746520746865207369746527732064617461626173652E
 	#tag EndConstant
