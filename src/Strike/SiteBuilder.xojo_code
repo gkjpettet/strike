@@ -389,16 +389,16 @@ Protected Class SiteBuilder
 		  
 		  Var postCount As Integer = rs.Column("total").IntegerValue
 		  
-		  // Get the "year-archive.html" template file text to use to render this year's archive list page(s).
-		  Var templateFile As FolderItem = Theme.Child("layouts").Child("year-archive.html")
+		  // Get the "archives.html" template file text to use to render this archive list page(s).
+		  Var templateFile As FolderItem = Theme.Child("layouts").Child("archives.html")
 		  If Not templateFile.Exists Then
-		    Raise New Strike.Error("The `year-archive.html` template file is missing.")
+		    Raise New Strike.Error("The `archives.html` template file is missing.")
 		  End If
 		  Var template As String = FileContents(templateFile)
 		  
 		  // As we know how many posts to list per page and we know how many posts there are, we can
 		  // calculate how many list pages we need.
-		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", 10)
+		  Var postsPerPage As Integer = Config.Lookup("postsPerPage", -1)
 		  Var numListPages As Integer = If(postsPerPage = -1, 1, Ceiling(postCount / postsPerPage))
 		  
 		  // Construct any required pagination folders.
@@ -1462,10 +1462,10 @@ Protected Class SiteBuilder
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
 		  
-		  // Get the "archive.html" template file text to use to render this post.
-		  Var templateFile As FolderItem = Theme.Child("layouts").Child("archive.html")
+		  // Get the "archives-home.html" template file text to use to render this post.
+		  Var templateFile As FolderItem = Theme.Child("layouts").Child("archives-home.html")
 		  If Not templateFile.Exists Then
-		    Raise New Strike.Error("The `archive.html` template file is missing")
+		    Raise New Strike.Error("The `archives-home.html` template file is missing")
 		  End If
 		  Var result As String = FileContents(templateFile)
 		  

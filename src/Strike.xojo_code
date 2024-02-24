@@ -399,6 +399,14 @@ Protected Module Strike
 		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing a `404.html` file.")
 		  End If
 		  
+		  If Not layouts.Child("archives.html").Exists Then
+		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing an `archives.html` file.")
+		  End If
+		  
+		  If Not layouts.Child("archives-home.html").Exists Then
+		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing an `archives-home.html` file.")
+		  End If
+		  
 		  If Not layouts.Child("home.html").Exists Then
 		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing a `home.html` file.")
 		  End If
