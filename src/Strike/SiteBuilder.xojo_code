@@ -212,6 +212,8 @@ Protected Class SiteBuilder
 		  /// baseURL/archive/<year>/<month>/<day>/index.html
 		  /// baseURL/archive/<year>/page/<pageNumber>/index.html
 		  
+		  #Pragma Warning "TODO: Test"
+		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
@@ -387,10 +389,10 @@ Protected Class SiteBuilder
 		  
 		  Var postCount As Integer = rs.Column("total").IntegerValue
 		  
-		  // Get the "archives.html" template file text to use to render this year's archive list page(s).
-		  Var templateFile As FolderItem = Theme.Child("layouts").Child("archives.html")
+		  // Get the "year-archive.html" template file text to use to render this year's archive list page(s).
+		  Var templateFile As FolderItem = Theme.Child("layouts").Child("year-archive.html")
 		  If Not templateFile.Exists Then
-		    Raise New Strike.Error("The `archives.html` template file is missing.")
+		    Raise New Strike.Error("The `year-archive.html` template file is missing.")
 		  End If
 		  Var template As String = FileContents(templateFile)
 		  

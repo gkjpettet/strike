@@ -53,7 +53,7 @@ Protected Module SQL
 		  Else
 		    Return "SELECT DISTINCT(dateDay) AS day FROM posts WHERE dateYear='" + year.ToString + "' " + _
 		    "AND dateMonth='" + month.ToString + "' " + _
-		    "AND isPage='0' AND isHomepage='0 AND isDraft=0' ORDER BY dateDay DESC;"
+		    "AND isPage='0' AND isHomepage='0' AND isDraft='0' ORDER BY dateDay DESC;"
 		  End If
 		End Function
 	#tag EndMethod
@@ -69,7 +69,7 @@ Protected Module SQL
 		    "AND isPage='0' AND isHomepage='0' ORDER BY dateMonth DESC;"
 		  Else
 		    Return "SELECT DISTINCT(dateMonth) AS month FROM posts WHERE dateYear='" + year.ToString + "' " + _
-		    "AND isPage='0' AND isHomepage='0 AND isDraft=0' ORDER BY dateMonth DESC;"
+		    "AND isPage='0' AND isHomepage='0' AND isDraft='0' ORDER BY dateMonth DESC;"
 		  End If
 		End Function
 	#tag EndMethod
