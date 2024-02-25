@@ -3,47 +3,43 @@ Protected Class App
 Inherits ConsoleApplication
 	#tag Event
 		Function Run(args() as String) As Integer
-		  Var builder As Strike.SiteBuilder = Strike.SiteBuilder.Load(SpecialFolder.UserHome.Child("Sites").Child("garrypettet.local"))
-		  builder.Build
-		  quit
+		  // Remove the executable path (always passed as the first argument).
+		  args.RemoveAt(0)
 		  
-		  ' // Remove the executable path (always passed as the first argument).
-		  ' args.RemoveAt(0)
-		  ' 
-		  ' // If no arguments passed we'll just print the basic usage and exit.
-		  ' If args.Count = 0 Then Help.BasicUsage
-		  ' 
-		  ' // Work out which command to run
-		  ' Select Case args(0)
-		  ' Case "build"
-		  ' Command = CommandTypes.Build
-		  ' 
-		  ' Case "create"
-		  ' Command = CommandTypes.Create
-		  ' 
-		  ' Case "help"
-		  ' Command = CommandTypes.Help
-		  ' 
-		  ' Case "set"
-		  ' Command = CommandTypes.Set
-		  ' 
-		  ' Case "version"
-		  ' Command = CommandTypes.Version
-		  ' 
-		  ' Else
-		  ' PrintError("[" + args(0) + "] is an unknown command.")
-		  ' End Select
-		  ' 
-		  ' // Remove the command from the arguments array.
-		  ' args.RemoveAt(0)
-		  ' 
-		  ' ParseCommandOptions(args)
-		  ' 
-		  ' RunCommand
-		  ' 
-		  ' Exception e As Strike.Error
-		  ' PrintError(e.message)
+		  // If no arguments passed we'll just print the basic usage and exit.
+		  If args.Count = 0 Then Help.BasicUsage
 		  
+		  // Work out which command to run
+		  Select Case args(0)
+		  Case "build"
+		    Command = CommandTypes.Build
+		    
+		  Case "create"
+		    Command = CommandTypes.Create
+		    
+		  Case "help"
+		    Command = CommandTypes.Help
+		    
+		  Case "set"
+		    Command = CommandTypes.Set
+		    
+		  Case "version"
+		    Command = CommandTypes.Version
+		    
+		  Else
+		    PrintError("[" + args(0) + "] is an unknown command.")
+		  End Select
+		  
+		  // Remove the command from the arguments array.
+		  args.RemoveAt(0)
+		  
+		  ParseCommandOptions(args)
+		  
+		  RunCommand
+		  
+		  Exception e As Strike.Error
+		    PrintError(e.message)
+		    
 		End Function
 	#tag EndEvent
 

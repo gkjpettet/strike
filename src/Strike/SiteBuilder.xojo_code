@@ -212,8 +212,6 @@ Protected Class SiteBuilder
 		  /// baseURL/archive/<year>/<month>/<day>/index.html
 		  /// baseURL/archive/<year>/page/<pageNumber>/index.html
 		  
-		  #Pragma Warning "TODO: Test"
-		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
@@ -280,6 +278,10 @@ Protected Class SiteBuilder
 		    For Each month As Integer In months
 		      Var arcMonth As New ArchiveMonth(month)
 		      
+		      // How many posts in this month for this year?
+		      Var countRS As RowSet = Database.SelectSQL(SQL.PostCountForMonth(arcYear.Value, arcMonth.Value, buildDrafts))
+		      arcMonth.PostCount = countRS.Column("total").IntegerValue
+		      
 		      monthFolder = yearFolder.Child(month.ToString)
 		      monthFolder.CreateFolder
 		      BuildArchivesList(monthFolder, year, month)
@@ -326,11 +328,11 @@ Protected Class SiteBuilder
 		      
 		      ArchiveMonthsHTML = ArchiveMonthsHTML + "<li>" + _
 		      "<a href=" + QUOTE + url + QUOTE + ">" + arcMonth.ShortName + " " + _
-		      arcYear.Value.ToString + "</a></li>"
+		      arcYear.Value.ToString + "</a><span class=""post-count"">" + arcMonth.PostCount.ToString + "</span></li>"
 		      
 		      ArchiveLongMonthsHTML = ArchiveLongMonthsHTML + "<li>" + _
 		      "<a href=" + QUOTE + url + QUOTE + ">" + arcMonth.LongName + " " + _
-		      arcYear.Value.ToString + "</a></li>"
+		      arcYear.Value.ToString + "</a><span class=""post-count"">" + arcMonth.PostCount.ToString + "</span></li>"
 		    Next arcMonth
 		  Next arcYear
 		  
@@ -412,14 +414,29 @@ Protected Class SiteBuilder
 		  
 		  // Get all required posts, ordered by published date, paginated and render them.
 		  For currentPage As Integer = 1 To numListPages
+		    // Create the context for this list page.
+		    Var context As New Strike.ListContext
+		    
 		    Try
 		      Select Case type
 		      Case "year"
 		        rs = Database.SelectSQL(SQL.PostsForYear(year, postsPerPage, currentPage, buildDrafts))
+		        context.ArchiveYear = year
+		        context.ArchiveMonth = month
+		        context.ArchiveDay = day
+		        context.ArchiveDateRange = year.ToString
 		      Case "month"
 		        rs = Database.SelectSQL(SQL.PostsForMonth(year, month, postsPerPage, currentPage, buildDrafts))
+		        context.ArchiveYear = year
+		        context.ArchiveMonth = month
+		        context.ArchiveDay = day
+		        context.ArchiveDateRange = MonthToString(month) + " " + year.ToString
 		      Case "day"
 		        rs = Database.SelectSQL(SQL.PostsForDay(year, month, day, postsPerPage, currentPage, buildDrafts))
+		        context.ArchiveYear = year
+		        context.ArchiveMonth = month
+		        context.ArchiveDay = day
+		        context.ArchiveDateRange = MonthToString(month) + " " + day.ToString + " " + year.ToString
 		      Else
 		        Raise New Strike.Error("Invalid type `" + type + "`.")
 		      End Select
@@ -431,8 +448,6 @@ Protected Class SiteBuilder
 		      Raise New Strike.Error("Unexpected Nil RowSet.")
 		    End If
 		    
-		    // Create the context for this list page.
-		    Var context As New Strike.ListContext
 		    If numListPages = 1 Then
 		      //  Only one page.
 		      context.PreviousPage = ""
@@ -2166,7 +2181,38 @@ Protected Class SiteBuilder
 		    // {{list.VALUE}}
 		    If tag.Length >= 5 And tag.Left(5) = "list." Then
 		      tag = tag.Replace("list.", "")
-		      If tag = "tag" Then Return listContext.Tag
+		      
+		      Select Case tag
+		      Case "tag"
+		        Return listContext.Tag
+		        
+		      Case "archiveDateRange"
+		        Return listContext.ArchiveDateRange
+		        
+		      Case "archiveYear"
+		        If listContext.ArchiveYear > -1 Then
+		          Return listContext.ArchiveYear.ToString
+		        Else
+		          Return ""
+		        End If
+		        
+		      Case "archiveMonth"
+		        If listContext.ArchiveMonth > -1 Then
+		          Return MonthToString(listContext.ArchiveMonth)
+		        Else
+		          Return ""
+		        End If
+		        
+		      Case "archiveDay"
+		        If listContext.ArchiveDay > -1 Then
+		          Return listContext.ArchiveDay.ToString
+		        Else
+		          Return ""
+		        End If
+		        
+		      Else
+		        Raise New Strike.Error ("Unknown list tag `{{list." + tag + "}}`.")
+		      End Select
 		    End If
 		    
 		    If tag = "nextPage" Then Return listContext.NextPage
@@ -2351,11 +2397,11 @@ Protected Class SiteBuilder
 		  /// passed named tag.
 		  /// Raises a Strike.Error if there is no Strike tag with the requested name.
 		  ///
-		  /// {{strike3.generator}}:
+		  /// {{strike.generator}}:
 		  ///        Meta tag For the version of Strike that built the site.
 		  ///        Example output: <meta name="generator" content="Strike 1.0.0" />
 		  ///
-		  /// {{strike3.version}}: Strike’s version number
+		  /// {{strike.version}}: Strike’s version number
 		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
@@ -2372,7 +2418,7 @@ Protected Class SiteBuilder
 		    Return Version.ToString
 		    
 		  Else
-		    Raise New Strike.Error("Unknown strike3 tag '{{strike." + name + "}}'")
+		    Raise New Strike.Error("Unknown strike tag '{{strike." + name + "}}'")
 		  End Select
 		  
 		End Function

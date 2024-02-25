@@ -69,11 +69,15 @@ Protected Class ArchiveMonth
 		LongName As String
 	#tag EndProperty
 
+	#tag Property, Flags = &h0, Description = 546865206E756D626572206F6620706F73747320696E20746869732061726368697665206D6F6E74682E
+		PostCount As Integer
+	#tag EndProperty
+
 	#tag Property, Flags = &h0
 		ShortName As String
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
+	#tag Property, Flags = &h0, Description = 546865206D6F6E7468206F662074686520796561722028312D32292E
 		Value As Integer
 	#tag EndProperty
 
@@ -132,14 +136,6 @@ Protected Class ArchiveMonth
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Value"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty

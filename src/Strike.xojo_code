@@ -122,6 +122,43 @@ Protected Module Strike
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21, Description = 52657475726E73206120737472696E672076657273696F6E206F6620746865206E756D65726963206D6F6E7468207061737365642028652E672E20224A616E75617279222066726F6D20312C20224665627275617279222066726F6D20322C20657463292E
+		Private Function MonthToString(m As Integer) As String
+		  /// Returns a string version of the numeric month passed 
+		  /// (e.g. "January" from 1, "February" from 2, etc).
+		  
+		  Select Case m
+		  Case 1
+		    Return "January"
+		  Case 2
+		    Return "February"
+		  Case 3
+		    Return "March"
+		  Case 4
+		    Return "April"
+		  Case 5
+		    Return "May"
+		  Case 6
+		    Return "June"
+		  Case 7
+		    Return "July"
+		  Case 8
+		    Return "August"
+		  Case 9
+		    Return "September"
+		  Case 10
+		    Return "October"
+		  Case 11
+		    Return "November"
+		  Case 12
+		    Return "December"
+		  Else
+		    Return ""
+		  End Select
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21, Description = 52657475726E7320746865207365636F6E6473206E6F772069732066726F6D20313937302028556E69782065706F63682074696D65292E
 		Private Function SecondsFrom1970() As Integer
 		  /// Returns the seconds now is from 1970 (Unix epoch time).
@@ -472,7 +509,12 @@ Protected Module Strike
 		  If Not themeDict.HasKey("minVersion") Then
 		    Raise New Strike.Error("The theme file (`" + themeFile.NativePath + "`) is missing the `minVersion` key.")
 		  End If
-		  #Pragma Warning "TODO: Assert the theme's version is compatible"
+		  Var themeVersion As New SemanticVersion(themeDict.Value("minVersion").StringValue)
+		  If themeVersion > Strike.Version Then
+		    Raise New Strike.Error("The `" + themeDict.Value("name") + _
+		    "` theme requires Strike version " + themeVersion.ToString + " but you are running version " _
+		    + Strike.Version.ToString + ".")
+		  End If
 		  
 		End Sub
 	#tag EndMethod
@@ -521,10 +563,10 @@ Protected Module Strike
 	#tag Constant, Name = VERSION_MAJOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"", Scope = Private
 	#tag EndConstant
 
 
