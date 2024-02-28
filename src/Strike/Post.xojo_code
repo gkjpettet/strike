@@ -59,7 +59,11 @@ Protected Class Post
 		  End If
 		  
 		  // Have the required post properties been overridden by the frontmatter?
-		  Data = ParseTOML(Frontmatter)
+		  Try
+		    Data = ParseTOML(Frontmatter)
+		  Catch e As RuntimeException
+		    Raise New Strike.Error("Invalid TOML frontmatter in `" + Self.File.NativePath + "`: " + e.Message)
+		  End Try
 		  
 		  // Post date.
 		  If Data.HasKey("date") Then
@@ -349,6 +353,22 @@ Protected Class Post
 			InitialValue=""
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FirstParagraph"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="String"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FirstParagraphStripped"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="String"
+			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
