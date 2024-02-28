@@ -3,6 +3,8 @@ Protected Class App
 Inherits ConsoleApplication
 	#tag Event
 		Function Run(args() as String) As Integer
+		  'Debug(SpecialFolder.UserHome.Child("Sites").Child("garrypettet.local"))
+		  
 		  // Remove the executable path (always passed as the first argument).
 		  args.RemoveAt(0)
 		  

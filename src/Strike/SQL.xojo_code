@@ -318,6 +318,39 @@ Protected Module SQL
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C2073746174656D656E7420746F2073656C65637420616C6C20706F73747320696E20746865207370656369666965642073656374696F6E206C696D6974656420746F2060706F7374735065725061676560207769746820616E206F66667365742063616C63756C617465642066726F6D2074686520706173736564206063757272656E7450616765602E206073656374696F6E602073686F756C6420626520646F742D64656C696D697465642028652E673A2022626C6F672E706572736F6E616C2220666F7220706F73747320696E2060636F6E74656E742F626C6F672F706572736F6E616C60292E205468652073656C656374696F6E2077696C6C20626520736F7274656420616C7068616265746963616C6C7920627920706F7374207469746C652E
+		Protected Function PostsForSectionOrderedAlphabetically(section As String, postsPerPage As Integer, currentPage As Integer, buildDrafts As Boolean) As String
+		  /// Returns the SQL statement to select all posts in the specified section limited
+		  /// to `postsPerPage` with an offset calculated from the passed `currentPage`.
+		  /// `section` should be dot-delimited (e.g: "blog.personal" for posts in `content/blog/personal`).
+		  /// The selection will be sorted alphabetically by post title.
+		  
+		  If postsPerPage = -1 Then
+		    // All posts for this section - no pagination.
+		    If buildDrafts Then
+		      Return "SELECT * FROM posts WHERE section='" + section + "' " + _
+		      "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY title ASC;"
+		    Else
+		      Return "SELECT * FROM posts WHERE section='" + section + "' AND isDraft=0 " + _
+		      "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY title ASC;"
+		    End If
+		  End If
+		  
+		  Var offset As Integer = (currentPage * postsPerPage) - postsPerPage
+		  
+		  If buildDrafts Then
+		    Return "SELECT * FROM posts WHERE section='" + section + "' " + _
+		    "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY title ASC LIMIT " + _
+		    postsPerPage.ToString + " OFFSET " + offset.ToString + ";"
+		  Else
+		    Return "SELECT * FROM posts WHERE section='" + section + "' AND isDraft=0 " + _
+		    "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY title ASC LIMIT " + _
+		    postsPerPage.ToString + " OFFSET " + offset.ToString + ";"
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C2073746174656D656E7420746F2073656C65637420616C6C20706F7374732077697468207468652073706563696669656420746167206C696D6974656420746F2060706F7374735065725061676560207769746820616E206F66667365742063616C63756C617465642066726F6D2074686520706173736564206063757272656E7450616765602E
 		Protected Function PostsForTag(tagName As String, postsPerPage As Integer, currentPage As Integer) As String
 		  /// Returns the SQL statement to select all posts with the specified tag limited to `postsPerPage`

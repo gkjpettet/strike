@@ -291,6 +291,10 @@ Protected Module Strike
 		    Raise New Strike.Error("The configuration dictionary is Nil.")
 		  End If
 		  
+		  If Not config.HasKey("alphabeticalSections") Then
+		    Raise New Strike.Error("The configuration file is missing the `alphabeticalSections` key.")
+		  End If
+		  
 		  If Not config.HasKey("archives") Then
 		    Raise New Strike.Error("The configuration file is missing the `archives` key.")
 		  End If
@@ -563,10 +567,10 @@ Protected Module Strike
 	#tag Constant, Name = VERSION_MAJOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"0", Scope = Private
 	#tag EndConstant
 
 

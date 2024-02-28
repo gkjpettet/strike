@@ -1245,6 +1245,16 @@ Protected Class SiteBuilder
 		    builder.mRSSExcludedSections.Add(section)
 		  Next section
 		  
+		  // Get the list of any sections that should be listed alphabetically by title rather than
+		  // publication date.
+		  // When a TOML array is parsed we get a Variant array. We need a String array...
+		  Var vListAlphabetically() As Variant = builder.Config.Value("alphabeticalSections")
+		  builder.Config.Remove("alphabeticalSections")
+		  For Each section As String In vListAlphabetically
+		    builder.AlphabeticalSections.Add(section)
+		  Next section
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -1280,9 +1290,11 @@ Protected Class SiteBuilder
 		Shared Function NewConfig() As Dictionary
 		  /// Returns a dictionary containing the default config settings for a site.
 		  
+		  Var alphabeticalSections() As String
 		  Var rssExcludedSections() As String
 		  
 		  Var config As New Dictionary( _
+		  "alphabeticalSections"        : alphabeticalSections, _
 		  "archives"                    : False, _
 		  "baseURL"                     : "/", _
 		  "buildDrafts"                 : False, _
@@ -1667,8 +1679,6 @@ Protected Class SiteBuilder
 		Private Sub RenderList(sectionFolder As FolderItem)
 		  /// Renders the list page(s) for the specified section as HTML to the /public folder.
 		  
-		  #Pragma Warning "TODO: Config setting to determine if the posts in this list are ordered by date or title?"
-		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
@@ -1722,12 +1732,17 @@ Protected Class SiteBuilder
 		    Next a
 		  End If
 		  
-		  // Get all posts belonging to this section, ordered by published date, paginated and render them.
+		  // Get all posts belonging to this section, ordered either by published date or alphabetically by title
+		  // paginated and render them.
 		  Var prevNum, nextNum As Integer
 		  For currentPage As Integer = 1 To numListPages
 		    Var rs As RowSet
 		    Try
-		      rs = Database.SelectSQL(SQL.PostsForSection(section, postsPerPage, currentPage, buildDrafts))
+		      If AlphabeticalSections.IndexOf(section) <> - 1Then
+		        rs = Database.SelectSQL(SQL.PostsForSectionOrderedAlphabetically(section, postsPerPage, currentPage, buildDrafts))
+		      Else
+		        rs = Database.SelectSQL(SQL.PostsForSection(section, postsPerPage, currentPage, buildDrafts))
+		      End If
 		      If rs = Nil Then Raise New Strike.Error("Unexpected RowSet = Nil.")
 		    Catch e As DatabaseException
 		      Raise New Strike.Error("Unable to get posts for section `" + section + "` from the database: " + e.Message)
@@ -2581,6 +2596,10 @@ Protected Class SiteBuilder
 		
 	#tag EndNote
 
+
+	#tag Property, Flags = &h21, Description = 53656374696F6E7320746861742073686F756C64206265206C697374656420616C7068616265746963616C6C7920726174686572207468616E206279207075626C69636174696F6E20646174652E204D617920626520656D7074792E
+		Private AlphabeticalSections() As String
+	#tag EndProperty
 
 	#tag Property, Flags = &h21, Description = 4120756E6F7264657265642048544D4C206C697374206F6620746865206172636869766573206279206C6F6E67206D6F6E7468202D2067656E65726174656420627920604275696C6441726368697665732829602E
 		Private ArchiveLongMonthsHTML As String
