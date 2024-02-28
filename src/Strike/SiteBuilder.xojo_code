@@ -1667,6 +1667,8 @@ Protected Class SiteBuilder
 		Private Sub RenderList(sectionFolder As FolderItem)
 		  /// Renders the list page(s) for the specified section as HTML to the /public folder.
 		  
+		  #Pragma Warning "TODO: Config setting to determine if the posts in this list are ordered by date or title?"
+		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False
@@ -1818,15 +1820,6 @@ Protected Class SiteBuilder
 		    "a Post instance.")
 		  End Try
 		  
-		  // Resolve any for each loops.
-		  // These are blocks of templating code that need to be run for each post in posts()
-		  // Syntax:
-		  //  {{foreach}}
-		  //    Any valid templating code
-		  //  {{endeach}}
-		  Var rg As New RegEx
-		  rg.SearchPattern = "{{foreach}}[\s\S]*?{{endeach}}"
-		  
 		  Var result As String = template
 		  
 		  // Check there is is actually content in this template file.
@@ -1836,20 +1829,29 @@ Protected Class SiteBuilder
 		    Return
 		  End If
 		  
+		  // Resolve any for each loops.
+		  // These are blocks of templating code that need to be run for each post in posts().
+		  // Syntax:
+		  //  {{foreach}}
+		  //    Any valid templating code
+		  //  {{endeach}}
+		  Var rg As New RegEx
+		  rg.SearchPattern = "{{foreach}}[\s\S]*?{{endeach}}"
+		  
 		  Var match As RegExMatch
 		  Var rawLoop, resolvedLoop As String
 		  Do
 		    match = rg.Search(result)
 		    If match <> Nil Then
+		      // Found a loop. 
 		      rawLoop = match.SubExpressionString(0)
 		      
 		      // Store the character position of the start of this loop.
-		      ' Var startIndex As Integer = match.SubExpressionStartB(0)
 		      Var startIndex As Integer = result.LeftBytes(match.SubExpressionStartB(0)).Length
 		      
-		      // Found a loop. Remove the {{foreach}} and {{endeach}} to get the loop contents.
+		      // Remove the {{foreach}} and {{endeach}} to get the loop contents.
 		      Var loopContents As String = rawLoop.Replace("{{foreach}}", "").Trim
-		      loopContents = loopContents.Left(loopContents.Length - 11).Trim
+		      loopContents = loopContents.Left(loopContents.Length - 11).Trim // 11 = {{endeach}}
 		      
 		      // For each post, we need to resolve the tags in loopContents.
 		      For Each post In posts
