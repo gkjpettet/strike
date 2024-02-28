@@ -450,8 +450,8 @@ Protected Class SiteBuilder
 		    
 		    If numListPages = 1 Then
 		      //  Only one page.
-		      context.PreviousPage = ""
-		      context.NextPage = ""
+		      context.PreviousPage = "#"
+		      context.NextPage = "#"
 		      
 		    Else
 		      // Multiple pages.
@@ -463,11 +463,11 @@ Protected Class SiteBuilder
 		        Else
 		          context.PreviousPage = Permalink(enclosingFolder.Child("page").Child(prevNum.ToString).Child("index.html"))
 		        End If
-		        context.NextPage = ""
+		        context.NextPage = "#"
 		        
 		      ElseIf currentPage = 1 Then
 		        //  First page of multiple pages.
-		        context.PreviousPage = ""
+		        context.PreviousPage = "#"
 		        nextNum = currentPage + 1
 		        context.NextPage = Permalink(enclosingFolder.Child("page").Child(nextNum.ToString).Child("index.html"))
 		        
@@ -1300,6 +1300,30 @@ Protected Class SiteBuilder
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21, Description = 52657475726E7320746865207065726D616C696E6B20746F20746865206E657874207075626C697368656420706F737420696E207468652073616D652073656374696F6E206F72202223222069662074686572652069736E2774206F6E652E
+		Private Function NextPost(post As Strike.Post) As String
+		  /// Returns the permalink to the next published post in the same section or "#"
+		  /// if there isn't one.
+		  
+		  Var rs As RowSet
+		  Try
+		    rs = Database.SelectSQL(SQL.PostsAfterDate(post.Date, post.Section, Config.Value("buildDrafts"), 1))
+		  Catch e As DatabaseException
+		    Raise New Strike.Error("Unable to select posts after date `" + post.Date.ToString + _
+		    "`: " + e.Message)
+		  End Try
+		  
+		  If rs = Nil Or rs.RowCount = 0 Then Return "#"
+		  
+		  For Each row As DatabaseRow In rs
+		    // We want the first row since the RowSet is ordered by date.
+		    Var nextP As Strike.Post = PostFromDatabaseRow(row)
+		    Return nextP.URL
+		  Next row
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21, Description = 52657475726E732074686520466F6C6465724974656D20666F72207768657265207468697320706F73742073686F756C642062652072656E646572656420746F20696E20746865206F757470757420666F6C6465722E
 		Private Function OutputPathForPost(p As Strike.Post) As FolderItem
 		  /// Returns the FolderItem for where this post should be rendered to in the output folder.
@@ -1446,6 +1470,30 @@ Protected Class SiteBuilder
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21, Description = 52657475726E7320746865207065726D616C696E6B20746F207468652070726576696F75736C79207075626C697368656420706F737420696E207468652073616D652073656374696F6E206F72202223222069662074686572652069736E2774206F6E652E
+		Private Function PreviousPost(post As Strike.Post) As String
+		  /// Returns the permalink to the previously published post in the same section or "#" 
+		  /// if there isn't one.
+		  
+		  Var rs As RowSet
+		  Try
+		    rs = Database.SelectSQL(SQL.PostsBeforeDate(post.Date, post.Section, Config.Value("buildDrafts"), 1))
+		  Catch e As DatabaseException
+		    Raise New Strike.Error("Unable to select posts before date `" + post.Date.ToString + _
+		    "`: " + e.Message)
+		  End Try
+		  
+		  If rs = Nil Or rs.RowCount = 0 Then Return "#"
+		  
+		  For Each row As DatabaseRow In rs
+		    // We want the first row since the RowSet is ordered by date.
+		    Var nextP As Strike.Post = PostFromDatabaseRow(row)
+		    Return nextP.URL
+		  Next row
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21, Description = 547261766572736573207468697320666F6C64657220616E642070617273657320697420696E746F20746865207369746527732064617461626173652E
 		Private Sub Process(folder As FolderItem)
 		  /// Traverses this folder and parses it into the site's database.
@@ -1575,8 +1623,8 @@ Protected Class SiteBuilder
 		    
 		    If numListPages = 1 Then
 		      // Only one page.
-		      context.PreviousPage = ""
-		      context.NextPage = ""
+		      context.PreviousPage = "#"
+		      context.NextPage = "#"
 		      
 		    Else
 		      // Multiple pages.
@@ -1588,11 +1636,11 @@ Protected Class SiteBuilder
 		        Else
 		          context.PreviousPage = Permalink(destination.Child("page").Child(prevNum.ToString).Child("index.html"))
 		        End If
-		        context.NextPage = ""
+		        context.NextPage = "#"
 		        
 		      ElseIf currentPage = 1 Then 
 		        // First page of multiple pages.
-		        context.PreviousPage = ""
+		        context.PreviousPage = "#"
 		        nextNum = currentPage + 1
 		        context.NextPage = Permalink(destination.Child("page").Child(nextNum.ToString).Child("index.html"))
 		        
@@ -1687,8 +1735,8 @@ Protected Class SiteBuilder
 		    Var context As New Strike.ListContext
 		    If numListPages = 1 Then
 		      // Only one page.
-		      context.PreviousPage = ""
-		      context.NextPage = ""
+		      context.PreviousPage = "#"
+		      context.NextPage = "#"
 		      
 		    Else
 		      // Multiple pages.
@@ -1700,11 +1748,11 @@ Protected Class SiteBuilder
 		        Else
 		          context.PreviousPage = Permalink(destination.Child("page").Child(prevNum.ToString).Child("index.html"))
 		        End If
-		        context.NextPage = ""
+		        context.NextPage = "#"
 		        
 		      ElseIf currentPage = 1 Then
 		        // First page of multiple pages.
-		        context.PreviousPage = ""
+		        context.PreviousPage = "#"
 		        nextNum = currentPage + 1
 		        context.NextPage = Permalink(destination.Child("page").Child(nextNum.ToString).Child("index.html"))
 		        
@@ -1953,13 +2001,13 @@ Protected Class SiteBuilder
 		  // Get the posts as a RowSet.
 		  If Config.Lookup("buildDrafts", False) Then
 		    Try
-		      rs = Database.SelectSQL("SELECT * FROM posts WHERE verified=1 AND date <= " + SecondsFrom1970.ToString + ";")
+		      rs = Database.SelectSQL("SELECT * FROM posts WHERE verified=1 AND date <= " + SecondsFrom1970.ToString("####################") + ";")
 		    Catch e As DatabaseException
 		      Raise New Strike.Error("Database error selecting all verified posts.")
 		    End Try
 		  Else
 		    Try
-		      Var sql As String = "SELECT * FROM posts WHERE verified=1 AND isDraft=0 AND date <= " + SecondsFrom1970.ToString + ";"
+		      Var sql As String = "SELECT * FROM posts WHERE verified=1 AND isDraft=0 AND date <= " + SecondsFrom1970.ToString("####################") + ";"
 		      rs = Database.SelectSQL(sql)
 		    Catch e As DatabaseException
 		      Raise New Strike.Error("Database error selecting all non-draft verified posts.")
@@ -2040,8 +2088,8 @@ Protected Class SiteBuilder
 		    Var context As New Strike.ListContext
 		    If numListPages = 1 Then
 		      // Only one page.
-		      context.PreviousPage = ""
-		      context.NextPage = ""
+		      context.PreviousPage = "#"
+		      context.NextPage = "#"
 		    Else
 		      // Multiple pages.
 		      If currentPage = numListPages Then
@@ -2052,10 +2100,10 @@ Protected Class SiteBuilder
 		        Else
 		          context.PreviousPage = Permalink(tagFolder.Child("page").Child(prevNum.ToString).Child("index.html"))
 		        End If
-		        context.nextPage = ""
+		        context.NextPage = "#"
 		      ElseIf currentPage = 1 Then
 		        // First page of multiple pages.
-		        context.PreviousPage = ""
+		        context.PreviousPage = "#"
 		        nextNum = currentPage + 1
 		        context.NextPage = Permalink(tagFolder.Child("page").Child(nextNum.ToString).Child("index.html"))
 		      Else
@@ -2210,19 +2258,25 @@ Protected Class SiteBuilder
 		          Return ""
 		        End If
 		        
+		      Case "nextPage"
+		        Return listContext.NextPage
+		        
+		      Case "previousPage"
+		        Return listContext.PreviousPage
+		        
 		      Else
 		        Raise New Strike.Error ("Unknown list tag `{{list." + tag + "}}`.")
 		      End Select
 		    End If
-		    
-		    If tag = "nextPage" Then Return listContext.NextPage
-		    If tag = "prevPage" Then Return listContext.PreviousPage
 		  End If
 		  
 		  // ------------------------------------------------------
 		  // Post-specific tags posts
 		  // ------------------------------------------------------
 		  If post <> Nil Then
+		    
+		    If tag = "nextPost" Then Return NextPost(post)
+		    If tag = "previousPost" Then Return PreviousPost(post)
 		    
 		    If tag = "content" Then Return post.RenderedMarkdown
 		    

@@ -3,46 +3,56 @@ Protected Class App
 Inherits ConsoleApplication
 	#tag Event
 		Function Run(args() as String) As Integer
-		  // Remove the executable path (always passed as the first argument).
-		  args.RemoveAt(0)
+		  Debug(SpecialFolder.UserHome.Child("Sites").Child("garrypettet.com"))
 		  
-		  // If no arguments passed we'll just print the basic usage and exit.
-		  If args.Count = 0 Then Help.BasicUsage
+		  ' // Remove the executable path (always passed as the first argument).
+		  ' args.RemoveAt(0)
+		  ' 
+		  ' // If no arguments passed we'll just print the basic usage and exit.
+		  ' If args.Count = 0 Then Help.BasicUsage
+		  ' 
+		  ' // Work out which command to run
+		  ' Select Case args(0)
+		  ' Case "build"
+		  ' Command = CommandTypes.Build
+		  ' 
+		  ' Case "create"
+		  ' Command = CommandTypes.Create
+		  ' 
+		  ' Case "help"
+		  ' Command = CommandTypes.Help
+		  ' 
+		  ' Case "set"
+		  ' Command = CommandTypes.Set
+		  ' 
+		  ' Case "version"
+		  ' Command = CommandTypes.Version
+		  ' 
+		  ' Else
+		  ' PrintError("[" + args(0) + "] is an unknown command.")
+		  ' End Select
+		  ' 
+		  ' // Remove the command from the arguments array.
+		  ' args.RemoveAt(0)
+		  ' 
+		  ' ParseCommandOptions(args)
+		  ' 
+		  ' RunCommand
+		  ' 
+		  ' Exception e As Strike.Error
+		  ' PrintError(e.message)
 		  
-		  // Work out which command to run
-		  Select Case args(0)
-		  Case "build"
-		    Command = CommandTypes.Build
-		    
-		  Case "create"
-		    Command = CommandTypes.Create
-		    
-		  Case "help"
-		    Command = CommandTypes.Help
-		    
-		  Case "set"
-		    Command = CommandTypes.Set
-		    
-		  Case "version"
-		    Command = CommandTypes.Version
-		    
-		  Else
-		    PrintError("[" + args(0) + "] is an unknown command.")
-		  End Select
-		  
-		  // Remove the command from the arguments array.
-		  args.RemoveAt(0)
-		  
-		  ParseCommandOptions(args)
-		  
-		  RunCommand
-		  
-		  Exception e As Strike.Error
-		    PrintError(e.message)
-		    
 		End Function
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h21
+		Private Sub Debug(site As FolderItem)
+		  Var builder As Strike.SiteBuilder = Strike.SiteBuilder.Load(site)
+		  builder.Build
+		  Quit
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h0, Description = 486176696E672070617273656420776869636820636F6D6D616E6420746F2072756E20616E6420656E737572696E67207765206861766520612076616C696420636F6D6D616E642C2074686973206D6574686F6420646F657320667572746865722070617273696E67206F662074686520636F6D6D616E642773206F7074696F6E7320286966207265717569726564292E
 		Sub ParseCommandOptions(options() As String)

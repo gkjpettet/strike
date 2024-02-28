@@ -9,10 +9,10 @@ Protected Module SQL
 		    // Return all posts. No pagination.
 		    If buildDrafts Then
 		      Return "SELECT * FROM posts WHERE isPage=0 AND date <= " + _
-		      SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		      SecondsFrom1970.ToString("####################") + " ORDER BY date DESC;"
 		    Else
 		      Return "SELECT * FROM posts WHERE isPage=0 AND isDraft=0 AND date <= " + _
-		      SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		      SecondsFrom1970.ToString("####################") + " ORDER BY date DESC;"
 		    End If
 		  End If
 		  
@@ -20,11 +20,11 @@ Protected Module SQL
 		  
 		  If buildDrafts Then
 		    Return "SELECT * FROM posts WHERE isPage=0 AND date <= " + _
-		    SecondsFrom1970.ToString + " ORDER BY date DESC LIMIT " + _
+		    SecondsFrom1970.ToString("####################") + " ORDER BY date DESC LIMIT " + _
 		    postsPerPage.ToString + " OFFSET " + offset.ToString + ";"
 		  Else
 		    Return "SELECT * FROM posts WHERE isPage=0 AND isDraft=0 AND date <= " + _
-		    SecondsFrom1970.ToString + " ORDER BY date DESC LIMIT " + _
+		    SecondsFrom1970.ToString("####################") + " ORDER BY date DESC LIMIT " + _
 		    postsPerPage.ToString + " OFFSET " + offset.ToString + ";"
 		  End If
 		  
@@ -136,6 +136,74 @@ Protected Module SQL
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C20717565727920746F2073656C65637420616C6C20706F73747320696E20746865207370656369666965642073656374696F6E2061667465722074686520676976656E20646174652C206F7074696F6E616C6C79206C696D6974656420746F2061206E756D6265722E20536F72746564206279206461746520617363656E64696E672E
+		Protected Function PostsAfterDate(d As DateTime, section As String, includeDrafts As Boolean, limit As Integer = -1) As String
+		  /// Returns the SQL query to select all posts in the specified section after the given date, 
+		  /// optionally limited to a number. Sorted by date ascending.
+		  
+		  If limit < 0 Then
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE date > '" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY date ASC;"
+		    Else
+		      Return "SELECT * FROM posts WHERE date > '" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY date ASC;"
+		    End If
+		    
+		  Else
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE date >'" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY date ASC LIMIT " + limit.ToString + ";"
+		    Else
+		      Return "SELECT * FROM posts WHERE date >'" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY date ASC LIMIT " + limit.ToString + ";"
+		    End If
+		    
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C20717565727920746F2073656C65637420616C6C20706F73747320696E2074686520676976656E2073656374696F6E206265666F72652074686520676976656E20646174652C206F7074696F6E616C6C79206C696D6974656420746F2061206E756D6265722E20536F72746564206279206461746520617363656E64696E672E
+		Protected Function PostsBeforeDate(d As DateTime, section As String, includeDrafts As Boolean, limit As Integer = -1) As String
+		  /// Returns the SQL query to select all posts in the given section before the given date, 
+		  /// optionally limited to a number. Sorted by date ascending.
+		  
+		  If limit < 0 Then
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE date < '" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY date DESC"
+		    Else
+		      Return "SELECT * FROM posts WHERE date < '" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY date DESC"
+		    End If
+		    
+		  Else
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE date <'" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY date DESC LIMIT " + limit.ToString + ";"
+		    Else
+		      Return "SELECT * FROM posts WHERE date <'" + d.SecondsFrom1970.ToString("####################") + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY date DESC LIMIT " + limit.ToString + ";"
+		    End If
+		    
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C2073746174656D656E7420746F2073656C65637420616C6C20706F7374732066726F6D2074686520737065636966696564206461792C206D6F6E746820616E642079656172206C696D6974656420746F2060706F7374735065725061676560207769746820616E206F66667365742063616C63756C617465642066726F6D2074686520706173736564206063757272656E7450616765602E204578636C756465732070616765732E
 		Protected Function PostsForDay(year As Integer, month As Integer, day As Integer, postsPerPage As Integer, currentPage As Integer, buildDrafts As Boolean) As String
 		  /// Returns the SQL statement to select all posts from the specified day, month and year limited
@@ -228,10 +296,10 @@ Protected Module SQL
 		    // All posts for this section - no pagination.
 		    If buildDrafts Then
 		      Return "SELECT * FROM posts WHERE section='" + section + "' " + _
-		      "AND date <= " + SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		      "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY date DESC;"
 		    Else
 		      Return "SELECT * FROM posts WHERE section='" + section + "' AND isDraft=0 " + _
-		      "AND date <= " + SecondsFrom1970.ToString + " ORDER BY date DESC;"
+		      "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY date DESC;"
 		    End If
 		  End If
 		  
@@ -239,11 +307,11 @@ Protected Module SQL
 		  
 		  If buildDrafts Then
 		    Return "SELECT * FROM posts WHERE section='" + section + "' " + _
-		    "AND date <= " + SecondsFrom1970.ToString + " ORDER BY date DESC LIMIT " + _
+		    "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY date DESC LIMIT " + _
 		    postsPerPage.ToString + " OFFSET " + offset.ToString + ";"
 		  Else
 		    Return "SELECT * FROM posts WHERE section='" + section + "' AND isDraft=0 " + _
-		    "AND date <= " + SecondsFrom1970.ToString + " ORDER BY date DESC LIMIT " + _
+		    "AND date <= " + SecondsFrom1970.ToString("####################") + " ORDER BY date DESC LIMIT " + _
 		    postsPerPage.ToString + " OFFSET " + offset.ToString + ";"
 		  End If
 		  
