@@ -752,9 +752,11 @@ Protected Class SiteBuilder
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0, Description = 437265617465732061206E657720656D7074792073697465206E616D65642060736974654E616D65602077697468696E2061206368696C6420666F6C646572206F662060706172656E74602E2041737369676E7320746869732073697465206275696C64657220746F20746865206E65776C7920636F6E737472756374656420736974652E
-		Shared Function Create(siteName As String, parent As FolderItem, sampleContent As Boolean = True) As Strike.SiteBuilder
-		  /// Creates a new empty site named `siteName` within a child folder of `parent`.
+	#tag Method, Flags = &h0, Description = 437265617465732061206E657720656D7074792073697465206E616D65642060736974654E616D65602077697468696E2061206368696C6420666F6C646572206F662060706172656E7460207573696E6720746865207370656369666965642064656661756C74207468656D652E
+		Shared Function Create(siteName As String, parent As FolderItem, defaultTheme As FolderItem, sampleContent As Boolean) As Strike.SiteBuilder
+		  /// Creates a new empty site named `siteName` within a child folder of `parent` using the 
+		  /// specified default theme.
+		  ///
 		  /// Assigns this site builder to the newly constructed site.
 		  /// Raises an exception if an issue occurs.
 		  
@@ -812,8 +814,9 @@ Protected Class SiteBuilder
 		    Raise New IOException("Unable to create the `themes` folder within the site root.")
 		  End Try
 		  
+		  ValidateTheme(defaultTheme)
+		  
 		  // Copy the default theme to the `themes` folder.
-		  Var defaultTheme As FolderItem = SpecialFolder.Resource("themes").Child(builder.DefaultTheme)
 		  defaultTheme.CopyTo(builder.Root.Child("themes"))
 		  
 		  // Initialise the site's configuration.

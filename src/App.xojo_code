@@ -3,7 +3,7 @@ Protected Class App
 Inherits ConsoleApplication
 	#tag Event
 		Function Run(args() as String) As Integer
-		  'Debug(SpecialFolder.UserHome.Child("Sites").Child("garrypettet.local"))
+		  'Debug(SpecialFolder.UserHome.Child("Repos").Child("garrypettet.com"))
 		  
 		  // Remove the executable path (always passed as the first argument).
 		  args.RemoveAt(0)
@@ -237,7 +237,7 @@ Inherits ConsoleApplication
 		  #EndIf
 		  
 		  Try
-		    Builder = Strike.SiteBuilder.Create(siteName, cwd, True)
+		    Builder = Strike.SiteBuilder.Create(siteName, cwd, BundledTheme("skeleton"), True)
 		    
 		    #If TargetWindows
 		      // The tick doesn't display in the Windows Command Prompt...
