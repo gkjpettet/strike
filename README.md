@@ -37,3 +37,6 @@ To update strike run the following commands:
 scoop update
 scoop update strike
 ```
+
+[homebrew]: https://brew.sh
+[scoop]: https://scoop.sh
