@@ -449,7 +449,7 @@ Protected Class SiteBuilder
 		    End If
 		    
 		    If numListPages = 1 Then
-		      //  Only one page.
+		      // Only one page.
 		      context.PreviousPage = "#"
 		      context.NextPage = "#"
 		      
@@ -1321,8 +1321,18 @@ Protected Class SiteBuilder
 		  /// if there isn't one.
 		  
 		  Var rs As RowSet
+		  
+		  Var query As String
+		  If AlphabeticalSections.IndexOf(post.Section) <> -1 Then
+		    // This post's section is ordered alphabetically by title.
+		    query = SQL.PostsAfterTitle(post.title, post.Section, Config.Value("buildDrafts"), 1)
+		  Else
+		    // This post's section is ordered by publication date.
+		    query = SQL.PostsAfterDate(post.Date, post.Section, Config.Value("buildDrafts"), 1)
+		  End If
+		  
 		  Try
-		    rs = Database.SelectSQL(SQL.PostsAfterDate(post.Date, post.Section, Config.Value("buildDrafts"), 1))
+		    rs = Database.SelectSQL(query)
 		  Catch e As DatabaseException
 		    Raise New Strike.Error("Unable to select posts after date `" + post.Date.ToString + _
 		    "`: " + e.Message)
@@ -1331,7 +1341,7 @@ Protected Class SiteBuilder
 		  If rs = Nil Or rs.RowCount = 0 Then Return "#"
 		  
 		  For Each row As DatabaseRow In rs
-		    // We want the first row since the RowSet is ordered by date.
+		    // We want the first row since the RowSet order is important.
 		    Var nextP As Strike.Post = PostFromDatabaseRow(row)
 		    Return nextP.URL
 		  Next row
@@ -1491,8 +1501,18 @@ Protected Class SiteBuilder
 		  /// if there isn't one.
 		  
 		  Var rs As RowSet
+		  
+		  Var query As String
+		  If AlphabeticalSections.IndexOf(post.Section) <> -1 Then
+		    // This post's section is ordered alphabetically by title.
+		    query = SQL.PostsBeforeTitle(post.Title, post.Section, Config.Value("buildDrafts"), 1)
+		  Else
+		    // This post's section is ordered by publication date.
+		    query = SQL.PostsBeforeDate(post.Date, post.Section, Config.Value("buildDrafts"), 1)
+		  End If
+		  
 		  Try
-		    rs = Database.SelectSQL(SQL.PostsBeforeDate(post.Date, post.Section, Config.Value("buildDrafts"), 1))
+		    rs = Database.SelectSQL(query)
 		  Catch e As DatabaseException
 		    Raise New Strike.Error("Unable to select posts before date `" + post.Date.ToString + _
 		    "`: " + e.Message)
@@ -1501,7 +1521,7 @@ Protected Class SiteBuilder
 		  If rs = Nil Or rs.RowCount = 0 Then Return "#"
 		  
 		  For Each row As DatabaseRow In rs
-		    // We want the first row since the RowSet is ordered by date.
+		    // We want the first row since the RowSet order is important.
 		    Var nextP As Strike.Post = PostFromDatabaseRow(row)
 		    Return nextP.URL
 		  Next row

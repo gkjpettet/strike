@@ -170,6 +170,40 @@ Protected Module SQL
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C20717565727920746F2073656C65637420616C6C20706F73747320696E2074686520676976656E2073656374696F6E2061667465722074686520676976656E207469746C652C206F7074696F6E616C6C79206C696D6974656420746F2061206E756D6265722E20536F7274656420616C7068616265746963616C6C79206279207469746C652E
+		Protected Function PostsAfterTitle(title As String, section As String, includeDrafts As Boolean, limit As Integer = -1) As String
+		  /// Returns the SQL query to select all posts in the given section after the given title, 
+		  /// optionally limited to a number. Sorted alphabetically by title.
+		  
+		  If limit < 0 Then
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE title > '" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY title ASC"
+		    Else
+		      Return "SELECT * FROM posts WHERE title > '" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY title ASC"
+		    End If
+		    
+		  Else
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE title >'" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY title ASC LIMIT " + limit.ToString + ";"
+		    Else
+		      Return "SELECT * FROM posts WHERE title >'" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY title ASC LIMIT " + limit.ToString + ";"
+		    End If
+		    
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C20717565727920746F2073656C65637420616C6C20706F73747320696E2074686520676976656E2073656374696F6E206265666F72652074686520676976656E20646174652C206F7074696F6E616C6C79206C696D6974656420746F2061206E756D6265722E20536F72746564206279206461746520617363656E64696E672E
 		Protected Function PostsBeforeDate(d As DateTime, section As String, includeDrafts As Boolean, limit As Integer = -1) As String
 		  /// Returns the SQL query to select all posts in the given section before the given date, 
@@ -197,6 +231,40 @@ Protected Module SQL
 		      Return "SELECT * FROM posts WHERE date <'" + d.SecondsFrom1970.ToString("####################") + "' " + _
 		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
 		      "ORDER BY date DESC LIMIT " + limit.ToString + ";"
+		    End If
+		    
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652053514C20717565727920746F2073656C65637420616C6C20706F73747320696E2074686520676976656E2073656374696F6E206265666F72652074686520676976656E207469746C652C206F7074696F6E616C6C79206C696D6974656420746F2061206E756D6265722E20536F7274656420616C7068616265746963616C6C79206279207469746C652E
+		Protected Function PostsBeforeTitle(title As String, section As String, includeDrafts As Boolean, limit As Integer = -1) As String
+		  /// Returns the SQL query to select all posts in the given section before the given title, 
+		  /// optionally limited to a number. Sorted alphabetically by title.
+		  
+		  If limit < 0 Then
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE title < '" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY title DESC"
+		    Else
+		      Return "SELECT * FROM posts WHERE title < '" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY title DESC"
+		    End If
+		    
+		  Else
+		    
+		    If includeDrafts Then
+		      Return "SELECT * FROM posts WHERE title <'" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' " + _
+		      "ORDER BY title DESC LIMIT " + limit.ToString + ";"
+		    Else
+		      Return "SELECT * FROM posts WHERE title <'" + title + "' " + _
+		      "AND section='" + section + "' AND isPage='0' AND isHomepage='0' AND isDraft='0' " + _
+		      "ORDER BY title DESC LIMIT " + limit.ToString + ";"
 		    End If
 		    
 		  End If
