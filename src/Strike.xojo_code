@@ -285,54 +285,56 @@ Protected Module Strike
 	#tag Method, Flags = &h1, Description = 41737365727473207468617420746865207265717569726564206B657973206172652070726573656E7420696E207468652074686520706173736564207369746520636F6E66696775726174696F6E2064696374696F6E6172792E20526169736573206120537472696B652E4572726F72206966206E6F742E
 		Protected Sub ValidateConfigHasRequiredKeys(config As Dictionary)
 		  /// Asserts that the required keys are present in the the passed site configuration dictionary.
-		  /// Raises a Strike.Error if not.
+		  /// Adds in the defaults if not present.
 		  
 		  If config = Nil Then
 		    Raise New Strike.Error("The configuration dictionary is Nil.")
 		  End If
 		  
 		  If Not config.HasKey("alphabeticalSections") Then
-		    Raise New Strike.Error("The configuration file is missing the `alphabeticalSections` key.")
+		    Var tmp() As String
+		    config.Value("alphabeticalSections") = tmp
 		  End If
 		  
 		  If Not config.HasKey("archives") Then
-		    Raise New Strike.Error("The configuration file is missing the `archives` key.")
+		    config.Value("archives") = CONFIG_DEFAULT_ARCHIVES
 		  End If
 		  
 		  If Not config.HasKey("baseURL") Then
-		    Raise New Strike.Error("The configuration file is missing the `baseURL` key.")
+		    config.Value("baseURL") = CONFIG_DEFAULT_BASE_URL
 		  End If
 		  
 		  If Not config.HasKey("buildDrafts") Then
-		    Raise New Strike.Error("The configuration file is missing the `buildDrafts` key.")
+		    config.Value("buildDrafts") = CONFIG_DEFAULT_BUILD_DRAFTS
 		  End If
 		  
 		  If Not config.HasKey("description") Then
-		    Raise New Strike.Error("The configuration file is missing the `description` key.")
+		    config.Value("description") = CONFIG_DEFAULT_DESCRIPTION
 		  End If
 		  
 		  If Not config.HasKey("includeHomeLinkInNavigation") Then
-		    Raise New Strike.Error("The configuration file is missing the `includeHomeLinkInNavigation` key.")
+		    config.Value("includeHomeLinkInNavigation") = CONFIG_INCLUDE_HOME_LINK_IN_NAVIGATION
 		  End If
 		  
 		  If Not config.HasKey("postsPerPage") Then
-		    Raise New Strike.Error("The configuration file is missing the `postsPerPage` key.")
+		    config.Value("postsPerPage") = CONFIG_DEFAULT_POSTS_PER_PAGE
 		  End If
 		  
 		  If Not config.HasKey("rss") Then
-		    Raise New Strike.Error("The configuration file is missing the `rss` key.")
+		    config.Value("rss") = CONFIG_DEFAULT_RSS
 		  End If
 		  
 		  If Not config.HasKey("rssExcludedSections") Then
-		    Raise New Strike.Error("The configuration file is missing the `rssExcludedSections` key.")
+		    Var tmp() As String
+		    config.Value("rssExcludedSections") = tmp
 		  End If
 		  
 		  If Not config.HasKey("theme") Then
-		    Raise New Strike.Error("The configuration file is missing the `theme` key.")
+		    config.Value("theme") = CONFIG_DEFAULT_THEME
 		  End If
 		  
 		  If Not config.HasKey("siteName") Then
-		    Raise New Strike.Error("The configuration file is missing the `siteName` key.")
+		    config.Value("siteName") = CONFIG_DEFAULT_SITE_NAME
 		  End If
 		End Sub
 	#tag EndMethod
@@ -561,6 +563,33 @@ Protected Module Strike
 	#tag EndComputedProperty
 
 
+	#tag Constant, Name = CONFIG_DEFAULT_ARCHIVES, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_DEFAULT_BASE_URL, Type = String, Dynamic = False, Default = \"/", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_DEFAULT_BUILD_DRAFTS, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_DEFAULT_DESCRIPTION, Type = String, Dynamic = False, Default = \"My awesome site.", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_DEFAULT_POSTS_PER_PAGE, Type = Double, Dynamic = False, Default = \"10", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_DEFAULT_RSS, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_DEFAULT_SITE_NAME, Type = String, Dynamic = False, Default = \"My Site", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_DEFAULT_THEME, Type = String, Dynamic = False, Default = \"skeleton", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_INCLUDE_HOME_LINK_IN_NAVIGATION, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = REGEX_STRIP_HTML, Type = String, Dynamic = False, Default = \"<(\?:[^>\x3D]|\x3D\'[^\']*\'|\x3D\"[^\"]*\"|\x3D[^\'\"][^\\s>]*)*>", Scope = Private, Description = 526567756C61722065787072657373696F6E20666F72206D61746368696E672048544D4C20746167732E
 	#tag EndConstant
 
@@ -570,7 +599,7 @@ Protected Module Strike
 	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
 
