@@ -6,7 +6,7 @@
 					AppliesTo = 0
 					Architecture = 0
 					Target = 0
-					Destination = 1
+					Destination = 2
 					Subdirectory = 
 					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9za2VsZXRvbi8=
 				End
@@ -18,12 +18,12 @@
 					AppliesTo = 0
 					Architecture = 0
 					Target = 0
-					Destination = 1
+					Destination = 2
 					Subdirectory = 
 					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9za2VsZXRvbi8=
 				End
 				Begin SignProjectStep Sign
-				  DeveloperID=
+				  DeveloperID=HFY9BS9SXH
 				End
 			End
 			Begin BuildStepList Windows
@@ -33,7 +33,7 @@
 					AppliesTo = 0
 					Architecture = 0
 					Target = 0
-					Destination = 1
+					Destination = 2
 					Subdirectory = 
 					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9za2VsZXRvbi8=
 				End

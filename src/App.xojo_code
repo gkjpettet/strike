@@ -46,6 +46,16 @@ Inherits ConsoleApplication
 	#tag EndEvent
 
 
+	#tag Method, Flags = &h21, Description = 52657475726E73207468652062756E646C6564207468656D652063616C6C656420606E616D65602E2042756E646C6564207468656D6573206172652073746F7265642077697468696E2074686520617070277320604C6962736020666F6C6465722E
+		Private Function BundledTheme(name As String) As FolderItem
+		  /// Returns the bundled theme called `name`.
+		  /// Bundled themes are stored within the app's `Libs` folder.
+		  
+		  Var appName As String = ExecutableFile.Name.ReplaceAll(".exe", "")
+		  Return ExecutableFile.Parent.Child(appName + " Libs").Child(name)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Debug(site As FolderItem)
 		  Var builder As Strike.SiteBuilder = Strike.SiteBuilder.Load(site)
@@ -264,7 +274,8 @@ Inherits ConsoleApplication
 		  
 		  Try
 		    // Get the skeleton theme bundled with the app.
-		    Var newTheme As FolderItem = SpecialFolder.Resource("skeleton")
+		    // Assumes it has been copied into the frameworks folder in a build step.
+		    Var newTheme As FolderItem = BundledTheme("skeleton")
 		    
 		    // Rename it.
 		    newTheme.Name = themeName
