@@ -2145,7 +2145,7 @@ Protected Class SiteBuilder
 	#tag Method, Flags = &h21, Description = 54616B657320612060746167602066726F6D20612074656D706C6174652066696C6520696E2074686520666F726D20607B7B736F6D657468696E677D7D6020616E64207265736F6C76657320697420746F206120737472696E672076616C75652E20417373756D657320607461676020697320666C616E6B6564207769746820607B7B7D7D602E204D617920726169736520612060537472696B652E4572726F72602E
 		Private Function ResolveTag(tag As String, post As Strike.Post = Nil, listContext As Strike.ListContext = Nil) As String
 		  /// Takes a `tag` from a template file in the form `{{something}}` and resolves it to
-		  /// a string value.
+		  /// a string value. Returns an empty string if the tag is unknown.
 		  /// Assumes `tag` is flanked with `{{}}`.
 		  /// May raise a `Strike.Error`.
 		  ///
@@ -2346,7 +2346,8 @@ Protected Class SiteBuilder
 		    
 		  End If
 		  
-		  Raise New Strike.Error ("Unknown post tag `{{" + tag + "}}`.")
+		  // Unknown tag, just return an empty string.
+		  Return ""
 		End Function
 	#tag EndMethod
 
