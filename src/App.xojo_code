@@ -182,9 +182,9 @@ Inherits ConsoleApplication
 		    
 		    #If TargetWindows
 		      // The tick doesn't display in the Windows Command Prompt...
-		      Print(Colourise("Success.︎", Colour.green)
+		      Print(Colourise("Success.︎", Colour.Green))
 		    #Else
-		      Print(Colourise("Success ✔︎", Colour.green))
+		      Print(Colourise("Success ✔︎", Colour.Green))
 		    #EndIf
 		    
 		    Print("Site built in " + watch.ElapsedMilliseconds.ToString + " ms")
