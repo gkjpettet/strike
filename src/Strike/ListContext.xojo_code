@@ -1,6 +1,6 @@
 #tag Class
 Protected Class ListContext
-	#tag Property, Flags = &h0, Description = 546865206172636869766520646174652072616E6765207468617420706F73747320696E207468697320636F6E7465787420617265206472616E772066726F6D2E20452E673A20223230323322206F72202246656272756172792032332032303234222E
+	#tag Property, Flags = &h0, Description = 546865206172636869766520646174652072616E6765207468617420706F73747320696E207468697320636F6E746578742061726520647261776E2066726F6D2E20452E673A20223230323322206F72202246656272756172792032332032303234222E
 		ArchiveDateRange As String
 	#tag EndProperty
 
@@ -91,6 +91,38 @@ Protected Class ListContext
 			Visible=true
 			Group="Position"
 			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ArchiveDateRange"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="String"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ArchiveDay"
+			Visible=false
+			Group="Behavior"
+			InitialValue="-1"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ArchiveMonth"
+			Visible=false
+			Group="Behavior"
+			InitialValue="-1"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ArchiveYear"
+			Visible=false
+			Group="Behavior"
+			InitialValue="-1"
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
