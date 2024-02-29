@@ -2155,8 +2155,6 @@ Protected Class SiteBuilder
 		  /// If this is a list page then a ListContext will be passed in.
 		  /// A Post instance will be passed in for all posts and pages except the homepage.
 		  
-		  #Pragma Warning "CHECK: Are frontmatter variables available here?"
-		  
 		  #Pragma DisableBackgroundTasks
 		  #Pragma DisableBoundsChecking
 		  #Pragma StackOverflowChecking False

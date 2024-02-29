@@ -529,7 +529,7 @@ Would output the following HTML:
 The `{{foreach}}...{{endeach}}` block only has meaning in list templates. By default, the posts are iterated over by publication date but this can be changed (on a per-section basis) to alphabetically by title by using the `alphabeticalSections` key in the `config.toml` file.
 
 ## <a id="the-context">The context</a>
-Every template file is passed a `context`. There are two types of context that a template file may be passed: a _list context_ or a _post context_. Each type of context has its own unique variables assigned to it by Strike and there are a number of base variables common to both types of context. Additionally, variables defined in a file's [frontmatter](#frontmatter) are also injected into the context.
+Every template file is passed a `context`. There are two types of context that a template file may be passed: a _list context_ or a _post context_. Each type of context has its own unique variables assigned to it by Strike and there are a number of base variables common to both types of context.
 
 Single posts and pages have just one context. However, the context within a list page changes when within an iteration of a `{{foreach}}...{{endeach}}` block. This is because a list page represents a collection of posts, each one having its own context.
 
