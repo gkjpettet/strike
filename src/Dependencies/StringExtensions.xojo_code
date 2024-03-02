@@ -860,15 +860,25 @@ Protected Module StringExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0, Description = 52657475726E732061206E657720737472696E672C207265706C6163696E6720746865207465787420626567696E6E696E67206174206073746172746020666F7220606C656E677468602063686172616374657273207769746820607265706C6163656D656E7460
-		Function Replace(Extends s As String, start As Integer, length As Integer, replacement As String) As String
+		Function Replace(Extends s As String, start As Integer, length As Integer, replacement As String, extendedUnicodeSupport As Boolean = True) As String
 		  /// Returns a new string, replacing the text beginning at `start` for `length` characters 
 		  /// with `replacement`
 		  
+		  Var left, right As String
+		  
 		  // Get all the characters from the beginning of the string up to start.
-		  Var left As String = s.LeftCharacters(start)
+		  If extendedUnicodeSupport Then
+		    left = s.LeftCharacters(start)
+		  Else
+		    left = s.Left(start)
+		  End If
 		  
 		  // Get the characters at the end of the string from `start + length`.
-		  Var right As String = s.RightCharacters(s.Length - start - length)
+		  If extendedUnicodeSupport Then
+		    right = s.RightCharacters(s.Length - start - length)
+		  Else
+		    right = s.Right(s.Length - start - length)
+		  End If
 		  
 		  Return left + replacement + right
 		  

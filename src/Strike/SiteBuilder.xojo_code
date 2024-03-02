@@ -1301,6 +1301,7 @@ Protected Class SiteBuilder
 		  "baseURL"                     : "/", _
 		  "buildDrafts"                 : False, _
 		  "description"                 : "My awesome site", _
+		  "extendedUnicodeSupport"      : False, _
 		  "includeHomeLinkInNavigation" : False, _
 		  "postsPerPage"                : 10, _
 		  "rss"                         : False, _
@@ -2326,7 +2327,7 @@ Protected Class SiteBuilder
 		      Var resolvedTag As String = ResolveTag(tag, p, context)
 		      
 		      // Replace the original {{tag}} with resolvedTag. It'll be the first occurrence in the string.
-		      s = s.Replace(tagStart, tag.Length, resolvedTag)
+		      s = s.Replace(tagStart, tag.Length, resolvedTag, Config.Lookup("extendedUnicodeSupport", False))
 		      
 		      // Since the string we're searching has changed (we've added in the contents of the
 		      // resolved tag) we need to adjust where we start searching from.

@@ -60,8 +60,14 @@ Inherits ConsoleApplication
 
 	#tag Method, Flags = &h21
 		Private Sub Debug(site As FolderItem)
+		  Var watch As New StopWatch(True)
+		  
 		  Var builder As Strike.SiteBuilder = Strike.SiteBuilder.Load(site)
 		  builder.Build
+		  
+		  watch.Stop
+		  Print("Took " + watch.ElapsedMilliseconds.ToString + " ms")
+		  
 		  Quit
 		End Sub
 	#tag EndMethod
