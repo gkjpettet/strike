@@ -1188,6 +1188,51 @@ Protected Class SiteBuilder
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21, Description = 496E6A656374732074686520737472696E672076616C75652073706563696669656420696E20436F6E6669672E696E6A65637448656164206A757374206265666F726520746865206669727374206F6363757272656E6365206F6620603C2F686561643E6020696E206068746D6C602E2052657475726E7320746865206D6F646966696564206068746D6C602E
+		Private Function InjectBody(html As String) As String
+		  /// Injects the string value specified in Config.injectBody just before the last 
+		  /// occurrence of `</body>` in `html`.
+		  /// Returns the modified `html`.
+		  
+		  Var value As String = Config.Lookup("injectBody", "")
+		  
+		  If value = "" Then Return html
+		  
+		  // Find the last occurrence of </body>.
+		  Var rx As New RegEx
+		  rx.SearchPattern = "(?<!<\/body>).+<\/body>"
+		  Var match As RegExMatch = rx.Search(html)
+		  
+		  // No match so leave the HTML unaltered.
+		  If match = Nil Then Return html
+		  
+		  // Get the start location in html of the found </body>.
+		  Var bodyStart As Integer = html.LeftBytes(match.SubExpressionStartB(0)).Length
+		  
+		  // Get the actual string matched (which may be preceded by whitespace).
+		  Var matchedBody As String = match.SubExpressionString(0)
+		  
+		  // Do the insertion.
+		  Return html.Replace(bodyStart, matchedBody.Length, value + EndOfLine + matchedBody, Config.Lookup("extendedUnicodeSupport", False))
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21, Description = 496E6A656374732074686520737472696E672076616C75652073706563696669656420696E20436F6E6669672E696E6A65637448656164206A757374206265666F726520746865206669727374206F6363757272656E6365206F6620603C2F686561643E6020696E206068746D6C602E2052657475726E7320746865206D6F646966696564206068746D6C602E
+		Private Function InjectHead(html As String) As String
+		  /// Injects the string value specified in Config.injectHead just before the first 
+		  /// occurrence of `</head>` in `html`.
+		  /// Returns the modified `html`.
+		  
+		  Var value As String = Config.Lookup("injectHead", "")
+		  
+		  If value = "" Then Return html
+		  
+		  Return html.Replace("</head>", value + EndOfLine + "</head>")
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21, Description = 54616B6573206120666F6C6465722077697468696E20602F636F6E74656E746020616E642072657475726E732054727565206966206974277320612073656374696F6E20726174686572207468616E206120706167652E204966206120666F6C64657220696E20602F636F6E74656E746020636F6E7461696E73206A75737420612073696E676C6520696E6465782E6D642066696C65207468656E2069742773206120706167652C206F7468657277697365206974277320612073656374696F6E2E
 		Private Function IsSection(folder As FolderItem) As Boolean
 		  /// Takes a folder within `/content` and returns True if it's a section rather than a page.
@@ -1303,6 +1348,8 @@ Protected Class SiteBuilder
 		  "description"                 : "My awesome site", _
 		  "extendedUnicodeSupport"      : False, _
 		  "includeHomeLinkInNavigation" : False, _
+		  "injectHead"                  : "", _
+		  "injectBody"                  : "", _
 		  "postsPerPage"                : 10, _
 		  "rss"                         : False, _
 		  "rssExcludedSections"         : rssExcludedSections, _
@@ -1577,6 +1624,18 @@ Protected Class SiteBuilder
 		  End If
 		  
 		  result = ResolveTags(result)
+		  
+		  // Is there anything to inject in the <head>?
+		  If Config.Lookup("injectHead", "") <> "" Then
+		    result = InjectHead(result)
+		  End If
+		  
+		  // Is there anything to inject at the end of <body>?
+		  If Config.Lookup("injectBody", "") <> "" Then
+		    result = InjectBody(result)
+		  End If
+		  
+		  result = result.Trim
 		  
 		  // Write the contents to disk.
 		  WriteToFile(destination, result.Trim)
@@ -1899,6 +1958,16 @@ Protected Class SiteBuilder
 		  
 		  result = ResolveTags(result, post, context)
 		  
+		  // Is there anything to inject in the <head>?
+		  If Config.Lookup("injectHead", "") <> "" Then
+		    result = InjectHead(result)
+		  End If
+		  
+		  // Is there anything to inject at the end of <body>?
+		  If Config.Lookup("injectBody", "") <> "" Then
+		    result = InjectBody(result)
+		  End If
+		  
 		  result = result.Trim
 		  
 		  // Write the result to disk.
@@ -1944,6 +2013,18 @@ Protected Class SiteBuilder
 		  End If
 		  
 		  result = ResolveTags(result, p)
+		  
+		  // Is there anything to inject in the <head>?
+		  If Config.Lookup("injectHead", "") <> "" Then
+		    result = InjectHead(result)
+		  End If
+		  
+		  // Is there anything to inject at the end of <body>?
+		  If Config.Lookup("injectBody", "") <> "" Then
+		    result = InjectBody(result)
+		  End If
+		  
+		  result = result.Trim
 		  
 		  // Write the contents to disk.
 		  WriteToFile(OutputPathForPost(p), result.Trim)

@@ -316,6 +316,14 @@ Protected Module Strike
 		    config.Value("includeHomeLinkInNavigation") = CONFIG_INCLUDE_HOME_LINK_IN_NAVIGATION
 		  End If
 		  
+		  If Not config.HasKey("injectBody") Then
+		    config.Value("injectBody") = CONFIG_INJECT_BODY
+		  End If
+		  
+		  If Not config.HasKey("injectHead") Then
+		    config.Value("injectHead") = CONFIG_INJECT_HEAD
+		  End If
+		  
 		  If Not config.HasKey("postsPerPage") Then
 		    config.Value("postsPerPage") = CONFIG_DEFAULT_POSTS_PER_PAGE
 		  End If
@@ -597,6 +605,12 @@ Protected Module Strike
 	#tag Constant, Name = CONFIG_INCLUDE_HOME_LINK_IN_NAVIGATION, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private
 	#tag EndConstant
 
+	#tag Constant, Name = CONFIG_INJECT_BODY, Type = String, Dynamic = False, Default = \"", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = CONFIG_INJECT_HEAD, Type = String, Dynamic = False, Default = \"", Scope = Private, Description = 5468652064656661756C7420737472696E6720746F20696E6A656374206A757374206265666F726520746865206669727374206F6363757272656E6365206F6620603C2F686561643E60206F6E206561636820706167652E
+	#tag EndConstant
+
 	#tag Constant, Name = REGEX_STRIP_HTML, Type = String, Dynamic = False, Default = \"<(\?:[^>\x3D]|\x3D\'[^\']*\'|\x3D\"[^\"]*\"|\x3D[^\'\"][^\\s>]*)*>", Scope = Private, Description = 526567756C61722065787072657373696F6E20666F72206D61746368696E672048544D4C20746167732E
 	#tag EndConstant
 
@@ -606,7 +620,7 @@ Protected Module Strike
 	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"4", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
 
 
