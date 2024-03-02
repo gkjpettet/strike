@@ -1576,25 +1576,7 @@ Protected Class SiteBuilder
 		    Return
 		  End If
 		  
-		  // Find the template tags within `result`.
-		  Var rg As New RegEx
-		  rg.SearchPattern = "{{\s?([^}]*)\s?}}"
-		  
-		  // Analyse each one and replace.
-		  Var match As RegExMatch
-		  Do
-		    match = rg.Search(result)
-		    If match <> Nil Then
-		      // Get the tag contents.
-		      Var tag As String = match.SubExpressionString(0)
-		      
-		      // Resolve the contents of this tag.
-		      Var resolvedTag As String = ResolveTag(tag)
-		      
-		      // Replace tag with resolvedTag.
-		      result = result.Replace(tag, resolvedTag)
-		    End If
-		  Loop Until match = Nil
+		  result = ResolveTags(result)
 		  
 		  // Write the contents to disk.
 		  WriteToFile(destination, result.Trim)
@@ -1894,26 +1876,9 @@ Protected Class SiteBuilder
 		      // For each post, we need to resolve the tags in loopContents.
 		      For Each post In posts
 		        
-		        Var rgLoop As New RegEx
-		        rgLoop.SearchPattern = "{{\s?([^}]*)\s?}}"
-		        
 		        Var pageLoop As String = loopContents
 		        
-		        // Analyse each one and replace.
-		        Var matchLoop As RegExMatch
-		        Do
-		          matchLoop = rgLoop.Search(pageLoop)
-		          If matchLoop <> Nil Then
-		            // Get the tag contents.
-		            Var tag As String = matchLoop.SubExpressionString(0)
-		            
-		            // Resolve the contents of this tag.
-		            Var resolvedTag As String = ResolveTag(tag, post, context)
-		            
-		            // Replace tag with resolvedTag.
-		            pageLoop = pageLoop.Replace(tag, resolvedTag)
-		          End If
-		        Loop Until matchLoop = Nil
+		        pageLoop = ResolveTags(pageLoop, post, context)
 		        
 		        resolvedLoop = resolvedLoop + pageLoop
 		        
@@ -1932,24 +1897,7 @@ Protected Class SiteBuilder
 		    
 		  Loop Until match = Nil
 		  
-		  // Now resolve any other tags outside of a loop.
-		  rg = New RegEx
-		  rg.SearchPattern = "{{\s?([^}]*)\s?}}"
-		  
-		  // Analyse each one and replace.
-		  Do
-		    match = rg.Search(result)
-		    If match <> Nil Then
-		      // Get the tag contents.
-		      Var tag As String = match.SubExpressionString(0)
-		      
-		      // Resolve the contents of this tag.
-		      Var resolvedTag As String = ResolveTag(tag, post, context)
-		      
-		      // Replace tag with resolvedTag.
-		      result = result.Replace(tag, resolvedTag)
-		    End If
-		  Loop Until match = Nil
+		  result = ResolveTags(result, post, context)
 		  
 		  result = result.Trim
 		  
@@ -1995,25 +1943,7 @@ Protected Class SiteBuilder
 		    Return
 		  End If
 		  
-		  // Find the template tags within `result`.
-		  Var rg As New RegEx
-		  rg.SearchPattern = "{{\s?([^}]*)\s?}}"
-		  
-		  // Analyse each one and replace.
-		  Var match As RegExMatch
-		  Do
-		    match = rg.Search(result)
-		    If match <> Nil Then
-		      // Get the tag contents.
-		      Var tag As String = match.SubExpressionString(0)
-		      
-		      // Resolve the contents of this tag.
-		      Var resolvedTag As String = ResolveTag(tag, p)
-		      
-		      // Replace `tag` with `resolvedTag`.
-		      result = result.Replace(tag, resolvedTag)
-		    End If
-		  Loop Until match = Nil
+		  result = ResolveTags(result, p)
 		  
 		  // Write the contents to disk.
 		  WriteToFile(OutputPathForPost(p), result.Trim)
@@ -2195,7 +2125,8 @@ Protected Class SiteBuilder
 		    // If so, return the contents of the partial template otherwise raise an error.
 		    Try
 		      Var partialFile As FolderItem = theme.Child("layouts").Child("partials").Child(partialName + ".html")
-		      Return FileContents(partialFile)
+		      // We need to recursively resolve any tags that might be in this partial template file too.
+		      Return ResolveTags(FileContents(partialFile))
 		    Catch
 		      Raise New Strike.Error ("Cannot locate the partial template file `" + partialName + "`.")
 		    End Try
@@ -2371,6 +2302,41 @@ Protected Class SiteBuilder
 		  
 		  // Unknown tag, just return an empty string.
 		  Return ""
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function ResolveTags(s As String, p As Strike.Post = Nil, context As Strike.ListContext = Nil) As String
+		  // Find the template tags within `s`.
+		  Var rg As New RegEx
+		  rg.SearchPattern = "{{\s*[^}]+\s*}}"
+		  
+		  // Analyse each one and replace.
+		  Var match As RegExMatch
+		  Var searchStart As Integer = 0
+		  Do
+		    match = rg.Search(s, searchStart)
+		    If match <> Nil Then
+		      // Get the {{tag}}.
+		      Var tag As String = match.SubExpressionString(0)
+		      
+		      // Store the character position of the start of this tag.
+		      Var tagStart As Integer = s.LeftBytes(match.SubExpressionStartB(0)).Length
+		      
+		      // Resolve the tag.
+		      Var resolvedTag As String = ResolveTag(tag, p, context)
+		      
+		      // Replace the original {{tag}} with resolvedTag. It'll be the first occurrence in the string.
+		      s = s.Replace(tagStart, tag.Length, resolvedTag)
+		      
+		      // Since the string we're searching has changed (we've added in the contents of the
+		      // resolved tag) we need to adjust where we start searching from.
+		      searchStart = tagStart + resolvedTag.Length
+		    End If
+		  Loop Until match = Nil
+		  
+		  Return s
+		  
 		End Function
 	#tag EndMethod
 
