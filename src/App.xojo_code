@@ -73,8 +73,7 @@ Inherits ConsoleApplication
 		  
 		  Select Case command
 		  Case CommandTypes.Build
-		    // Handle any flags.
-		    SetFlags(options)
+		    // Nothing to do.
 		    
 		  Case CommandTypes.Create
 		    // We need to parse more options for this command.
@@ -115,11 +114,6 @@ Inherits ConsoleApplication
 		  
 		  // Get the name of the item to create.
 		  Name = options(1)
-		  
-		  // Handle any flags by parsing what's left after removing the subcommand/section and the name.
-		  options.RemoveAt(0)
-		  options.RemoveAt(0)
-		  SetFlags(options)
 		  
 		End Sub
 	#tag EndMethod
@@ -347,18 +341,6 @@ Inherits ConsoleApplication
 		  Else
 		    PrintError("[" + options(0) + "] is an unknown command.")
 		  End Select
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0, Description = 537472696B652077696C6C20286576656E7475616C6C7929206163636570742061206E756D626572206F6620666C6167732061742074686520656E64206F662074686520617267756D656E747320737472696E672E2054686973206D6574686F642074616B657320616E20617272617920636F6E7461696E696E6720666C61677320616E642073657473207468656D206163636F7264696E676C792E
-		Sub SetFlags(flags() as String)
-		  /// Strike will (eventually) accept a number of flags at the end of the arguments string.
-		  /// This method takes an array containing flags and sets them accordingly.
-		  
-		  If flags.Count = 0 Then Return
-		  
-		  #Pragma Warning "TODO"
 		  
 		End Sub
 	#tag EndMethod

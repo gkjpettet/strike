@@ -198,8 +198,7 @@ Protected Class SiteBuilder
 		  If Config.Lookup("rss", False) Then BuildRSSFeed
 		  
 		  // Run post build scripts.
-		  #Pragma Warning "TODO: Implement"
-		  'RunScripts
+		  RunScripts
 		End Sub
 	#tag EndMethod
 
@@ -1077,7 +1076,7 @@ Protected Class SiteBuilder
 		  // We default to `theme/page.html` or `theme/post.html` if we can't 
 		  // find `theme/sectionPath/page.html` or `theme/sectionPath/page.html` (depending on `type`)
 		  // as these files are required to be present in every theme.
-		  Var templateFile As FolderItem = theme.Child("layouts")
+		  Var templateFile As FolderItem = Theme.Child("layouts")
 		  Var sections() As String = p.Section.Split(".")
 		  For Each section As String In sections
 		    templateFile = templateFile.Child(section)
@@ -2338,6 +2337,42 @@ Protected Class SiteBuilder
 		  Return s
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21, Description = 537472696B6520616C6C6F7773207468652072756E6E696E67206F6620637573746F6D20586F6A6F5363726970747320616674657220746865206275696C6420686173206265656E20636F6D706C657465642E2054686573652073637269707473206D75737420626520696E207468652073697465277320602F736372697074736020666F6C64657220616E6420686176652074686520657874656E73696F6E2060786F6A6F5F736372697074602E
+		Private Sub RunScripts()
+		  /// Strike allows the running of custom XojoScripts after the build has been completed.
+		  /// These scripts must be in the site's `/scripts` folder and have the extension `xojo_script`.
+		  
+		  // Scripts are optional so check there is a folder containing some.
+		  Var scriptsFolder As FolderItem = Root.Child("scripts")
+		  If Not scriptsFolder.Exists Then Return
+		  
+		  // Collate all the .xojo_script files in this folder.
+		  Var scripts() As FolderItem
+		  For Each f As FolderItem In scriptsFolder.Children
+		    If f.IsFolder = False And f.Name.EndsWith(".xojo_script") Then
+		      scripts.Add(f)
+		    End If
+		  Next f
+		  
+		  If scripts.Count = 0 Then Return
+		  
+		  // Run each script.
+		  Var context As New ScriptContext(Root, Theme)
+		  Var script As StrikeXojoScript
+		  For Each scriptFile As FolderItem In scripts
+		    script = New StrikeXojoScript(scriptFile, context)
+		    
+		    Try
+		      script.Run
+		    Catch e As RuntimeException
+		      Raise New Strike.Error("An error occurred whilst running the `" + _
+		      scriptFile.NativePath + "` script. " + e.Message)
+		    End Try
+		  Next scriptFile
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21, Description = 52657475726E73207468652073656374696F6E20666F72206120676976656E20706F73742E204D617920726169736520612060537472696B652E4572726F72602E
