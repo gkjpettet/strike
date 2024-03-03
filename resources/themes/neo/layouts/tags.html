@@ -1,0 +1,17 @@
+<!-- Homepage listing -->
+{{partial header}}
+
+{{partial mainNav}}
+		
+		<h3 class="tag-listing-heading">Posts tagged with <span class="post-tag">{{list.tag}}</span></h3>
+		
+		<section class="posts">
+		{{foreach}}
+		<div class="post">
+			<div class="post-date">{{date.shortMonth}} {{date.day}} {{date.Year}}</div>
+			<div class="post-title"><a href="{{permalink}}">{{title}}</a></div>
+		</div>
+		{{endeach}}
+		</section>
+
+{{partial footer}}

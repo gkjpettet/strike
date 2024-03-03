@@ -596,7 +596,7 @@ Protected Module Strike
 	#tag Constant, Name = CONFIG_DEFAULT_SITE_NAME, Type = String, Dynamic = False, Default = \"My Site", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = CONFIG_DEFAULT_THEME, Type = String, Dynamic = False, Default = \"skeleton", Scope = Private
+	#tag Constant, Name = CONFIG_DEFAULT_THEME, Type = String, Dynamic = False, Default = \"neo", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = CONFIG_EXTENDED_UNICODE_SUPPORT, Type = Boolean, Dynamic = False, Default = \"False", Scope = Private, Description = 49662054727565207468656E20657874656E64656420556E69636F64652063686172616374657273202873756368206173206365727461696E20656D6F6A69292077696C6C20626520737570706F727465642E20546869732077696C6C207369676E69666963616E746C7920736C6F7720646F776E2073697465206275696C64696E672028627920616E206F72646572206F66206D61676E6974756465292E
@@ -620,7 +620,7 @@ Protected Module Strike
 	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"4", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"2", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"3", Scope = Private
 	#tag EndConstant
 
 

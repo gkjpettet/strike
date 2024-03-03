@@ -9,6 +9,7 @@
 					Destination = 2
 					Subdirectory = 
 					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9za2VsZXRvbi8=
+					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9uZW8v
 				End
 			End
 			Begin BuildStepList Mac OS X
@@ -20,6 +21,7 @@
 					Target = 0
 					Destination = 2
 					Subdirectory = 
+					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9uZW8v
 					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9za2VsZXRvbi8=
 				End
 				Begin SignProjectStep Sign
@@ -36,6 +38,7 @@
 					Destination = 2
 					Subdirectory = 
 					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9za2VsZXRvbi8=
+					FolderItem = Li4vLi4vcmVzb3VyY2VzL3RoZW1lcy9uZW8v
 				End
 			End
 #tag EndBuildAutomation

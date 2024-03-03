@@ -1,0 +1,146 @@
+/* ===================================================
+   COLOUR VARIABLES
+   =================================================== */
+/* Light color scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme=light],
+:root:not([data-theme=dark]) {
+	  --code-class: #1C464A;
+	  --code-comment: #5D6C79;
+	  --code-escape: #753498;
+	  --code-identifier: #326D74;
+	  --code-keyword: #9B2393;
+	  --code-number: #1C00CF;
+	  --code-source: #000;
+	  --code-string: #C41A16;
+	  --code-preprocessor: #643820;
+	  
+	  --xojo-comment: #7D1012;
+	  --xojo-keyword: #0A5FFE;
+	  --xojo-string: #9D33D5;
+	  --xojo-integer: #28C732;
+	  --xojo-double: #146319;
+	  --xojo-color-red: #B21500;
+	  --xojo-color-green: #28C732;
+	  --xojo-color-blue: #0220B0;
+	  
+	  --toml-table: #146319;
+}
+
+/* Dark color scheme (Auto) */
+/* Automatically enabled if user has Dark mode enabled */
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+	  --code-class: #9EF1DD;
+	  --code-comment: #6C7986;
+	  --code-escape: #7d30cf;
+	  --code-identifier: #67B7A4;
+	  --code-keyword: #FC5FA3;
+	  --code-number: #D0BF69;
+	  --code-source: #fff;
+	  --code-string: #FC6A5D;
+	  --code-preprocessor: #FD8F3F;
+		  
+	  --xojo-comment: #FB4A4B;
+	  --xojo-keyword: #106AFE;
+	  --xojo-string: #AF38EE;
+	  --xojo-integer: #30D33A;
+	  --xojo-double: #18691D;
+	  --xojo-color-red: #FF4538;
+	  --xojo-color-green: #30D33A;
+	  --xojo-color-blue: #0883FE;
+	  
+	  --toml-table: #18691D;
+  }
+}
+/* Dark color scheme (Forced) */
+/* Enabled if forced with data-theme="dark" */
+[data-theme=dark] {
+	--code-class: #9EF1DD;
+	--code-comment: #6C7986;
+	--code-escape: #7d30cf;
+	--code-identifier: #67B7A4;
+	--code-keyword: #FC5FA3;
+	--code-number: #D0BF69;
+	--code-source: #fff;
+	--code-string: #FC6A5D;
+	--code-preprocessor: #FD8F3F;
+	
+	--xojo-comment: #FB4A4B;
+	--xojo-keyword: #106AFE;
+	--xojo-string: #AF38EE;
+	--xojo-integer: #30D33A;
+	--xojo-double: #18691D;
+	--xojo-color-red: #FF4538;
+	--xojo-color-green: #30D33A;
+	--xojo-color-blue: #0883FE;
+	
+	--toml-table: #18691D;
+}
+
+/* ====================================================
+   SOURCE CODE AREA
+   ==================================================== */
+pre {
+	background-color: var(--pico-code-background-color);
+	border: 1px solid var(--pico-primary);
+}
+
+pre code {
+	font-family: var(--pico-font-family-monospace);
+	color: var(--code-source);
+	padding: 5px;
+}
+
+/* ====================================================
+   GENERIC TOKENS
+   ==================================================== */
+pre code .comment { color: --code-comment; }
+pre code .escape { color: var(--code-escape); }
+pre code .identifier { color: var(--code-identifier); }
+pre code .class { color: var(--code-class); }
+pre code .keyword { color: var(--code-keyword); }
+pre code .number, pre .integer, pre .hex, pre .binary { color: var(--code-number); }
+pre code .operator { color: var(--code-source); }
+pre code .string { color: var(--code-string); }
+
+/* ====================================================
+   XOJO-SPECIFIC
+   ==================================================== */
+pre code.language-xojo .binary { color: var(--xojo-integer); }
+pre code.language-xojo .comment { color: var(--xojo-comment); }
+pre code.language-xojo .double { color: var(--xojo-double); }
+pre code.language-xojo .hex { color: var(--xojo-integer); }
+pre code.language-xojo .identifier { color: var(--source); }
+pre code.language-xojo .integer { color: var(--xojo-integer); }
+pre code.language-xojo .keyword { color: var(--xojo-keyword); }
+pre code.language-xojo .number { color: var(--xojo-integer); }
+pre code.language-xojo .string { color: var(--xojo-string); }
+pre code.language-xojo .red { color: var(--xojo-red); }
+pre code.language-xojo .green { color: var(--xojo-green); }
+pre code.language-xojo .blue { color: var(--xojo-blue); }
+
+/* ====================================================
+   OBJOSCRIPT-SPECIFIC
+   ==================================================== */
+pre code.language-objoscript .unicode4, pre code.language-objoscript .unicode8 { color: var(--code-escape); }
+
+/* ====================================================
+   SWIFT-SPECIFIC
+   ==================================================== */
+pre code.language-swift .interpolation { color: var(--code-source); }
+
+/* ====================================================
+   HTML-SPECIFIC
+   ==================================================== */
+pre code.language-html .attribute { color: var(--code-identifier); }
+pre code.language-html .support { color: var(--code-source); }
+pre code.language-html .tag-name { color: var(--code-class); }
+
+/* ====================================================
+   TOML-SPECIFIC
+   ==================================================== */
+   pre code.language-toml .boolean { color: var(--code-keyword); }
+   pre code.language-toml .date { color: var(--code-preprocessor); }   
+   pre code.language-toml .key { color: var(--code-identifier); }
+   pre code.language-toml .table { color: var(--toml-table); }

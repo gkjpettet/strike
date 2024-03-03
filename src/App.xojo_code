@@ -239,7 +239,7 @@ Inherits ConsoleApplication
 		  #EndIf
 		  
 		  Try
-		    Builder = Strike.SiteBuilder.Create(siteName, cwd, BundledTheme("skeleton"), True)
+		    Builder = Strike.SiteBuilder.Create(siteName, cwd, BundledTheme("neo"), True)
 		    
 		    #If TargetWindows
 		      // The tick doesn't display in the Windows Command Prompt...
@@ -252,7 +252,7 @@ Inherits ConsoleApplication
 		    Print("Your new site was created at " + Builder.Root.NativePath)
 		    
 		    Print("A single post and a simple page have been created in " + Colourise("/content", Colour.Magenta) + _
-		    ". A simple default theme called ")
+		    ". A beautiful default theme called ")
 		    
 		    Print("'" + builder.DefaultTheme + "' has been created for you in " + _
 		    Colourise("/themes", Colour.Magenta) + ".")

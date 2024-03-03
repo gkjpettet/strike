@@ -1,0 +1,30 @@
+<!-- Homepage listing -->
+{{partial header}}
+
+{{partial mainNav}}
+		
+		<section class="homepage-description">
+			{{site.description}}
+		</section>
+		
+		<section class="posts">
+		{{foreach}}
+		<div class="post">
+			<div class="post-date">{{date.shortMonth}} {{date.day}} {{date.Year}}</div>
+			<div class="post-title"><a href="{{permalink}}">{{title}}</a></div>
+		</div>
+		{{endeach}}
+		</section>
+		
+		<div class="grid pagination">
+			<div class="previous"><a class="previous" href="{{list.previousPage}}">Older Posts</a></div>
+			<div class="next"><a class="next" href="{{list.nextPage}}">Newer Posts</a></div>
+		</div>
+		  
+		<hr  />
+		  
+<footer>
+	{{partial rss}}
+</footer>
+
+{{partial footer}}

@@ -1,0 +1,186 @@
+:root {
+	/* Adjust some site-wide typography settings from the default Pico values. */
+	--pico-font-size: 105%;
+	--pico-line-height: 1.6;
+}
+
+/* Content should be constrained to a narrow container. */
+.container { max-width: 720px; }
+
+/* The link in the site header should be bold and not underlined. */
+a.siteName-header-link:visited, a.siteName-header-link:hover, a.siteName-header-link:link, a.siteName-header-link:active {
+	color: currentcolor;
+	text-decoration: none;
+	font-weight: bold;	
+}
+
+.page-content h1 { padding: 25px 0; }
+
+.tag-listing-heading {
+	padding: 25px 0;
+}
+
+/* =================================================  
+   POST LISTING 
+   ================================================= */
+.homepage-description { margin: 35px 0; }
+
+.homepage { margin-bottom: 30px }
+
+.homepage h4 { margin-bottom: 8px; }
+
+.posts .post { margin-bottom: 7px; }
+
+.posts .post-date {
+	display: inline-block;
+	width: 110px;
+}
+
+.posts .post-date {
+	display: inline-block;
+	width: 110px;
+}
+
+.posts .post-title { display: inline-block; }
+
+/* =================================================  
+   PROJECTS LIST PAGE 
+   ================================================= */
+.projects-description { margin-bottom: 30px; }
+   
+/* Space out the projects from one another. */
+.projects .project { margin-bottom: 30px; }
+
+/* Tighten up the distance between the project title and the tags beneath it. */
+.project .meta h3 { margin-bottom: 15px; }
+
+/* Project titles should only underline on hover. */
+.project-title a:active, .project-title a:link, .project-title a:visited { text-decoration: none; }
+.project-title a:hover { text-decoration: underline; }
+
+/* =================================================  
+   TAGS 
+   ================================================= */
+ul.tags {
+	margin-left: 0;
+	padding-left: 0;
+	font-size: smaller;
+}
+
+ul.tags li {
+	display: inline;
+	margin-right: 8px;
+	padding: 4px;
+	border-radius: 3px;
+	border: 1px solid var(--pico-form-element-border-color);
+	background: var(--pico-form-element-background-color);
+}
+
+/* Links in tags should be plain and simple */
+ul.tags li a:active, ul.tags li a:link, ul.tags li a:hover, ul.tags li a:visited {
+	color: var(--pico-contrast);
+	text-decoration: none;
+}
+
+.post-tag {
+	padding: 4px;
+	border-radius: 3px;
+	border: 1px solid var(--pico-form-element-border-color);
+	background: var(--pico-form-element-background-color);
+}
+
+/* =================================================  
+   POSTS
+   ================================================= */
+   /* If there are no tags for this post we need to hide the tags svg icon */
+   .post-tags { margin-top: 12px; }
+   .post-tags:not(:has(:nth-child(2))) { display: none; }
+   .post-tags ul { display: inline-block; margin-left: 5px; }
+   .published-date { margin: 10px 0; }
+   .published-date .date { margin-left: 6px; }
+   
+   .pagination .next { text-align: right; }
+   .pagination .next a[href="#"] { display: none; }
+   .pagination .previous a[href="#"] { display: none; }
+   
+   /* Since columns collapse on small screens, centre the pagination links */
+   @media only screen and (max-width: 768px) {
+	   .pagination .next { text-align: center; }
+	   .pagination .previous { text-align: center; }
+   }
+	 
+/* =================================================  
+  ARCHIVES 
+  ================================================= */
+.archives-header {
+	padding: 25px 0; 
+}
+  
+ul.archive-long-months {
+	padding: 0;
+}
+  
+ul.archive-long-months li {
+	  list-style-type: none;
+	  padding: 5px 0;
+}
+  
+ul.archive-long-months li .post-count {
+	margin-left: 5px;
+	color: var(--pico-muted-color);
+	display: none;
+}
+
+ul.archive-long-months li .post-count:before {
+	content: "(";
+}
+
+ul.archive-long-months li .post-count:after {
+	content: ")";
+}
+	  
+/* =================================================  
+   FOOTER
+   ================================================= */
+footer { margin-top: 30px; }
+
+.rss-link a { margin-left: 6px; }
+
+.credit {
+	text-align: center;
+}
+
+/* =================================================  
+   RESPONSIVE YOUTUBE VIDEOS
+   ================================================= */
+/* Need to remember to wrap the embed in a .video-container div */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* =================================================  
+   MOBILE-SPECIFIC
+   ================================================= */
+@media only screen and (max-width: 576px) {
+  .posts .post-title {
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  max-width: 210px;
+	  position: relative;
+	  top: 6px;
+  }
+  
+  .mainNav-logo {
+	  display: none;
+  }
+}

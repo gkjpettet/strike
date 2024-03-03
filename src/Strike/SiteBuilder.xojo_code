@@ -2746,7 +2746,7 @@ Protected Class SiteBuilder
 	#tag EndProperty
 
 	#tag Property, Flags = &h0, Description = 546865206E616D65206F6620746865207468656D6520746F20757365207768656E206372656174696E672061206E657720736974652E
-		Shared DefaultTheme As String = "skeleton"
+		Shared DefaultTheme As String = "neo"
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

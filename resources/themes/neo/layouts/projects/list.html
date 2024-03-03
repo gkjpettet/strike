@@ -1,0 +1,24 @@
+<!-- Projects listing -->
+{{partial header}}
+
+{{partial mainNav}}
+		
+		<h1>Projects</h1>
+		
+		<section class="projects-description">
+			<p>I spend most of my free time writing code (usually Xojo but increasingly Swift) or building small technical projects. Over the years I’ve done quite a few. On this page I'll try to list the more interesting ones. Click the project name to dive deeper.</p>
+		</section>
+		
+		<section class="projects">
+		{{foreach}}
+		<div class="project">
+			<div class="meta">
+				<h3 class="project-title"><a href="{{permalink}}">{{title}}</a></h3>
+				{{tags}}
+			</div>
+			{{firstParagraph}}
+		</div>
+		{{endeach}}
+		</section>
+		  
+{{partial footer}}
