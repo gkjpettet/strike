@@ -1,3 +1,6 @@
+/*
+HTML
+*/
 Rainbow.extend('html', [
 	{
 		name: 'source.php.embedded',
@@ -129,6 +132,9 @@ Rainbow.extend('html', [
 
 Rainbow.addAlias('xml', 'html');
 
+/*
+OBJOSCRIPT
+*/
  Rainbow.extend('objoscript', [
 	{
 		name: 'keyword',
@@ -193,6 +199,9 @@ Rainbow.addAlias('xml', 'html');
 	},
 ]);
 
+/*
+SWIFT
+*/
  Rainbow.extend('swift', [
 	{
 		name: 'keyword',
@@ -232,6 +241,9 @@ Rainbow.addAlias('xml', 'html');
 	
 ]);
 
+/*
+TOML
+*/
  Rainbow.extend('toml', [		 
 	{
 		 name: "boolean",
@@ -284,6 +296,9 @@ Rainbow.addAlias('xml', 'html');
 	}
 ]);
 
+/*
+XOJO
+*/
  Rainbow.extend('xojo', [
 	 {
 		 name: "keyword.directive",
