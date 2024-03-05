@@ -4,7 +4,7 @@ Inherits ConsoleApplication
 	#tag Event
 		Function Run(args() as String) As Integer
 		  ' #If DebugBuild
-		  ' Debug(SpecialFolder.UserHome.Child("Sites").Child("garrypettet.local"))
+		  ' Debug(SpecialFolder.UserHome.Child("Sites").Child("retro.local"))
 		  ' #EndIf
 		  
 		  // Remove the executable path (always passed as the first argument).
@@ -285,17 +285,17 @@ Inherits ConsoleApplication
 		    // Copy the skeleton theme to the current working directory.
 		    newTheme.CopyTo(SpecialFolder.CurrentWorkingDirectory)
 		    
-		    // Open the theme file and parse its JSON.
-		    Var themeFile As FolderItem = newTheme.Child("theme.json")
+		    // Open the theme file and parse its TOML.
+		    Var themeFile As FolderItem = newTheme.Child("theme.toml")
 		    Var tin As TextInputStream = TextInputStream.Open(themeFile)
-		    Var themeJSON As String = tin.ReadAll
+		    Var themeTOML As String = tin.ReadAll
 		    tin.Close
-		    Var themeDict As Dictionary = ParseJSON(themeJSON)
+		    Var themeDict As Dictionary = ParseTOML(themeTOML)
 		    
-		    // Rename the theme and overwrite the theme file with the updated JSON.
+		    // Rename the theme and overwrite the theme file with the updated TOML.
 		    themeDict.Value("name") = themeName
 		    Var tout As TextOutputStream = TextOutputStream.Create(themeFile)
-		    tout.Write(GenerateJSON(themeDict))
+		    tout.Write(GenerateTOML(themeDict))
 		    tout.Close
 		    
 		    #If TargetWindows

@@ -431,11 +431,11 @@ Protected Module Strike
 		    Raise New Strike.Error("A valid theme must be a folder, not a file.")
 		  End If
 		  
-		  // theme.json
-		  If Not theme.Child("theme.json").Exists Then
-		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing its `theme.json` file.")
+		  // theme.toml
+		  If Not theme.Child("theme.toml").Exists Then
+		    Raise New Strike.Error("The theme `" + theme.Name + "` is missing its `theme.toml` file.")
 		  End If
-		  ValidateThemeFile(theme.Child("theme.json"))
+		  ValidateThemeFile(theme.Child("theme.toml"))
 		  
 		  // /assets
 		  If Not theme.Child("assets").Exists Then
@@ -488,22 +488,22 @@ Protected Module Strike
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1, Description = 4173736572747320746865207061737365642066696C6520697320612076616C696420607468656D652E6A736F6E602066696C652E
+	#tag Method, Flags = &h1, Description = 4173736572747320746865207061737365642066696C6520697320612076616C696420607468656D652E746F6D6C602066696C652E
 		Protected Sub ValidateThemeFile(themeFile As FolderItem)
-		  /// Asserts the passed file is a valid `theme.json` file.
+		  /// Asserts the passed file is a valid `theme.toml` file.
 		  
 		  If themeFile = Nil Or Not themeFile.Exists Then
-		    Raise New Strike.Error("`theme.json` does not exist.")
+		    Raise New Strike.Error("`theme.toml` does not exist.")
 		  End If
 		  
 		  If themeFile.IsFolder Then
-		    Raise New Strike.Error("`theme.json` must be a file, not a folder.")
+		    Raise New Strike.Error("`theme.toml` must be a file, not a folder.")
 		  End If
 		  
-		  Var themeJSON As String
+		  Var themeTOML As String
 		  Try
 		    Var tin As TextInputStream = TextInputStream.Open(themeFile)
-		    themeJSON = tin.ReadAll
+		    themeTOML = tin.ReadAll
 		    tin.Close
 		  Catch e As IOException
 		    Raise New Strike.Error("Unable to read the contents of `" + themeFile.NativePath + "`.")
@@ -511,9 +511,9 @@ Protected Module Strike
 		  
 		  Var themeDict As Dictionary
 		  Try
-		    themeDict = ParseJSON(themeJSON)
-		  Catch e As JSONException
-		    Raise New Strike.Error("Invalid JSON in `" + themeFile.NativePath + "`: " + e.Message)
+		    themeDict = ParseTOML(themeTOML)
+		  Catch e As RuntimeException
+		    Raise New Strike.Error("Invalid TOML in `" + themeFile.NativePath + "`: " + e.Message)
 		  End Try
 		  
 		  If Not themeDict.HasKey("name") Then
@@ -617,10 +617,10 @@ Protected Module Strike
 	#tag Constant, Name = VERSION_MAJOR, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag Constant, Name = VERSION_MINOR, Type = Double, Dynamic = False, Default = \"5", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"4", Scope = Private
+	#tag Constant, Name = VERSION_PATCH, Type = Double, Dynamic = False, Default = \"0", Scope = Private
 	#tag EndConstant
 
 
