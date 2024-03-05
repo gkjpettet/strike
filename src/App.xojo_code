@@ -4,7 +4,7 @@ Inherits ConsoleApplication
 	#tag Event
 		Function Run(args() as String) As Integer
 		  ' #If DebugBuild
-		  ' Debug(SpecialFolder.UserHome.Child("Sites").Child("retro.local"))
+		  ' Debug(SpecialFolder.UserHome.Child("Sites").Child("garrypettet.local"))
 		  ' #EndIf
 		  
 		  // Remove the executable path (always passed as the first argument).
