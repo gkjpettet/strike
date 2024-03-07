@@ -2375,8 +2375,8 @@ Protected Class SiteBuilder
 		    // ------------------------------------------------------
 		    // Post data?
 		    // ------------------------------------------------------
-		    If post.Data <> Nil And post.Data.HasKey("tag") Then
-		      Return post.Data.Value("tag")
+		    If post.Data <> Nil Then
+		      Return post.Data.Lookup(tag, "")
 		    End If
 		    
 		  End If
