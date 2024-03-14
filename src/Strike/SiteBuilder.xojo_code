@@ -997,11 +997,10 @@ Protected Class SiteBuilder
 		    post.IsPage = False
 		  End If
 		  
-		  // By default we don't parse any template tags in a post's contents in case the
-		  // user wants to literally display a tag like `{{title}}`. However, if the frontmatter
-		  // contains `parseContents = true` then we will first parse the template tags before 
-		  // rendering the markdown.
-		  If post.Data.Lookup("parseContents", False) Then
+		  // By default we parse template tags in a post's contents. However, in case the
+		  // user wants to literally display a tag like `{{title}}` we can set `parseContents = false`
+		  // in a post's frontmatter.
+		  If post.Data.Lookup("parseContents", True) Then
 		    Var parsedContent As String = ResolveTags(post.Markdown, post)
 		    post.RenderedMarkdown = MarkdownKit.ToHTML(parsedContent)
 		  Else
