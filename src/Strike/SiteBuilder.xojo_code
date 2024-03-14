@@ -864,7 +864,7 @@ Protected Class SiteBuilder
 		  Try
 		    Database.ExecuteSQL(SCHEMA)
 		  Catch e As DatabaseException
-		    Raise New Strike.Error("An error occurring whilst creating the database from the scheme: " + e.Message)
+		    Raise New Strike.Error("An error occurred whilst creating the database from the schema: " + e.Message)
 		  End Try
 		  
 		End Sub
@@ -997,8 +997,16 @@ Protected Class SiteBuilder
 		    post.IsPage = False
 		  End If
 		  
-		  // Render the Markdown.
-		  post.RenderedMarkdown = MarkdownKit.ToHTML(post.Markdown)
+		  // By default we don't parse any template tags in a post's contents in case the
+		  // user wants to literally display a tag like `{{title}}`. However, if the frontmatter
+		  // contains `parseContents = true` then we will first parse the template tags before 
+		  // rendering the markdown.
+		  If post.Data.Lookup("parseContents", False) Then
+		    Var parsedContent As String = ResolveTags(post.Markdown, post)
+		    post.RenderedMarkdown = MarkdownKit.ToHTML(parsedContent)
+		  Else
+		    post.RenderedMarkdown = MarkdownKit.ToHTML(post.Markdown)
+		  End If
 		  
 		  /// Computes the first paragraph for this post (HTML stripped and not).
 		  Var rx As New RegEx
