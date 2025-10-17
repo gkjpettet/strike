@@ -65,22 +65,6 @@ Protected Module StringExtensions
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0, Description = 52657475726E7320746865206E756D626572206F66206368617261637465727320696E207468652070617373656420737472696E672028696E636C7564696E67206D756C7469627974652063686172616374657273292E
-		Function CharacterCount(Extends s As String) As Integer
-		  /// Returns the number of characters in the passed string (including multibyte characters).
-		  ///
-		  /// It would be faster to do this:
-		  /// ```
-		  /// Var t As Text = s.ToText
-		  /// Return t.Length
-		  /// ```
-		  ///
-		  /// but `ToText()` is deprecated.
-		  
-		  Return s.CharacterArray.Count
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21, Description = 436865636B7320696620607563602062656C6F6E677320746F20746865206C65747465722063617465676F72792E
 		Private Function CheckLetter(uc As StringExtensions.UnicodeCategories) As Boolean
 		  /// Checks if `uc` belongs to the letter category.

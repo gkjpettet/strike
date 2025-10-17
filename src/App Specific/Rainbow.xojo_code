@@ -69,7 +69,7 @@ Protected Module Rainbow
 		  
 		  u = if(underline, UNDERLINE_ON, UNDERLINE_OFF)
 		  
-		  return chrb(27) + "[" + fc + ";" + bc + ";" + b + ";" + u + "m"  + phrase + chrb(27) + "[0m"
+		  return String.ChrByte(27) + "[" + fc + ";" + bc + ";" + b + ";" + u + "m"  + phrase + String.ChrByte(27) + "[0m"
 		End Function
 	#tag EndMethod
 

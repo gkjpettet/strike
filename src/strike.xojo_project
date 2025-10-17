@@ -1,5 +1,5 @@
 Type=Console
-RBProjectVersion=2024.01
+RBProjectVersion=2025.021
 MinIDEVersion=20070100
 OrigIDEVersion=20240100
 Class=App;App.xojo_code;&h0000000038034FFF;&h0000000000000000;false
@@ -102,7 +102,7 @@ MDICaption=
 DefaultEncoding=&h0
 AppIcon=strike.xojo_resources;&h0
 OSXBundleID=xyz.pettetindustries.strike
-DebuggerCommandLine=
+DebuggerCommandLine=build
 UseGDIPlus=False
 UseBuildsFolder=True
 CopyRedistNextToWindowsEXE=False

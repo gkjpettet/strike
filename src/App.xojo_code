@@ -3,10 +3,6 @@ Protected Class App
 Inherits ConsoleApplication
 	#tag Event
 		Function Run(args() as String) As Integer
-		  ' #If DebugBuild
-		  ' Debug(SpecialFolder.UserHome.Child("Sites").Child("cpcnerd.local"))
-		  ' #EndIf
-		  
 		  // Remove the executable path (always passed as the first argument).
 		  args.RemoveAt(0)
 		  
@@ -171,7 +167,7 @@ Inherits ConsoleApplication
 		  // Set the site root to the current working directory
 		  Var siteFolder As FolderItem
 		  #If DebugBuild
-		    siteFolder = SpecialFolder.Desktop.Child("testsite")
+		    siteFolder = New FolderItem("/Users/garry/garrypettet.com", FolderItem.PathModes.Native)
 		  #Else
 		    siteFolder = SpecialFolder.CurrentWorkingDirectory
 		  #EndIf
