@@ -74,6 +74,14 @@ Inherits MKBlock
 			Type="Boolean"
 			EditorType=""
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HTMLBlockType"
+			Visible=false
+			Group="Behavior"
+			InitialValue="MKHTMLBlockTypes.None"
+			Type="MKHTMLBlockTypes"
+			EditorType=""
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

@@ -161,6 +161,22 @@ Protected Class MKListData
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ListDelimiter"
+			Visible=false
+			Group="Behavior"
+			InitialValue="MKListDelimiters.Period"
+			Type="MKListDelimiters"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ListType"
+			Visible=false
+			Group="Behavior"
+			InitialValue="MKListTypes.Bullet"
+			Type="MKListTypes"
+			EditorType=""
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

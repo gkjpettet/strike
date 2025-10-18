@@ -154,6 +154,14 @@ Inherits MKBlock
 			Type="Integer"
 			EditorType=""
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LinkType"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="MarkdownKit.MKLinkTypes"
+			EditorType=""
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

@@ -731,6 +731,14 @@ Protected Class MKBlock
 			Type="Boolean"
 			EditorType=""
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Type"
+			Visible=false
+			Group="Behavior"
+			InitialValue="MKBlockTypes.Block"
+			Type="MarkdownKit.MKBlockTypes"
+			EditorType=""
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass
